@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodroyale - Python Eğitimi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <meta name="description" content="Kodroyale Python Eğitimi - Python programlama dilinin temellerinden ileri seviye konularına kadar kapsamlı bir eğitim içeriği.">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #306998;          /* Python mavi */
+            --primary-dark: #1D415E;     /* Koyu Python mavi */
+            --secondary: #FFD43B;        /* Python sarı */
+            --accent: #4B8BBE;           /* Python açık mavi */
+            --accent-second: #64A334;    /* Python yılan yeşili */
+            --dark: #000000;             /* Koyu arka plan */
+            --darker: #000000;           /* Daha koyu arka plan */
+            --light: #F5F5F5;            /* Açık metin */
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+            --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+            --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+        }
+
+        * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background: var(--dark);
+            font-family: 'Poppins', sans-serif;
+            color: var(--light);
+            margin: 0;
+            user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+            overflow-x: hidden;
+        }
+        /* Header Section */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+        }
+        
+        .header .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: transform 0.3s ease;
+        }
+        
+        .header .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        /* Hero Section */
+        .hero {
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(10, 59, 206, 0.2), transparent 60%);
+            margin-top: 80px;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                text-shadow: 0 0 10px rgba(5, 195, 255, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(5, 195, 255, 0.3);
+            }
+            100% {
+                text-shadow: 0 0 10px rgba(5, 195, 255, 0.1);
+            }
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .hero-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--light);
+            background: var(--gradient);
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(10, 59, 206, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-accent);
+            transform: translateX(-100%);
+            transition: all 0.6s ease;
+            z-index: -1;
+        }
+        
+        .hero-btn:hover::before {
+            transform: translateX(0);
+        }
+        
+        .hero-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+        }
+        
+        /* Content Section */
+        .content-section {
+            padding: 4rem 10%;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        /* Topics Section */
+        .topics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .topic-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--glow);
+            border-color: var(--secondary);
+        }
+        
+        .topic-header {
+            padding: 1.5rem;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topic-header i {
+            font-size: 1.8rem;
+            color: var(--light);
+        }
+        
+        .topic-header h3 {
+            font-size: 1.5rem;
+            color: var(--light);
+            margin: 0;
+        }
+        
+        .topic-content {
+            padding: 1.5rem;
+        }
+        
+        .topic-content p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+        
+        /* Lesson Content */
+        .lesson-container {
+            display: none;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .lesson-container.active {
+            display: block;
+        }
+        
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .lesson-title {
+            font-size: 2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        .lesson-content {
+            line-height: 1.8;
+        }
+        
+        .lesson-content h3 {
+            margin: 2rem 0 1rem;
+            color: var(--secondary);
+        }
+        
+        .lesson-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--secondary);
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .tip-box {
+            background: rgba(5, 195, 255, 0.1);
+            border-left: 3px solid var(--secondary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning-box {
+            background: rgba(255, 2, 102, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .note-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #ffcc00;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* Navigation Buttons */
+        .lesson-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+        
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: var(--gradient);
+            transform: translateY(-3px);
+            box-shadow: var(--glow);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            padding: 4rem 10% 2rem;
+            text-align: center;
+            position: relative;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        /* Floating elements */
+        .floating {
+            position: absolute;
+            opacity: 0.1;
+            border-radius: 50%;
+            background: var(--gradient);
+            z-index: -1;
+        }
+        
+        .float1 {
+            width: 300px;
+            height: 300px;
+            top: 20%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .float2 {
+            width: 200px;
+            height: 200px;
+            top:600px;
+            right: 15%;
+            animation: float 10s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+        
+        .float3 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 60%;
+            animation: float 12s ease-in-out infinite;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+        
+        .learn-more {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--light);
+    background: var(--gradient);
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(10, 59, 206, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    margin-top: 1.5rem;
+}
+
+.learn-more::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-accent);
+    transform: translateX(-100%);
+    transition: all 0.6s ease;
+    z-index: -1;
+}
+
+.learn-more:hover::before {
+    transform: translateX(0);
+}
+
+.learn-more:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--glow);
+}
+
+.learn-more i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+/* Hamburger menü için CSS */
+#menu-toggle {
+    display: none; /* Checkbox gizle */
+}
+
+.mobile-menu-btn {
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Label kullanılacağı için değişiklik yapılıyor */
+.mobile-menu-btn i {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--light);
+    transition: all 0.3s ease;
+}
+
+/* Checkbox işaretlendiğinde menüyü göster */
+#menu-toggle:checked ~ .nav-links {
+    right: 0;
+}
+
+/* Hamburger simgesini çarpıya dönüştür */
+#menu-toggle:checked ~ .mobile-menu-btn i:before {
+    content: "\f00d"; /* fa-times (çarpı) ikonu */
+}
+
+/* Ekran genişlikleri için responsive ayarı */
+@media (max-width: 768px) {
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.5s ease;
+        z-index: 999;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+}
+
+.learn-more:hover i {
+    transform: translateX(4px);
+}
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+        /* Media Queries */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .header {
+                padding: 1.2rem 5%;
+            }
+            
+            .hero, .content-section {
+                padding-left: 5%;
+                padding-right: 5%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 5%;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.5s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1000;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-btn {
+                padding: 0.8rem 1.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .topics-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating {
+                display: none;
+            }
+        }
+        /* Hamburger Menü İkon Stilleri */
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: none;
+        color: var(--light);
+        cursor: pointer;
+        z-index: 1100;
+        transition: all 0.5s ease;
+        width: 40px;
+        height: 40px;
+        position: relative;
+    }
+@media (min-width: 769px) {
+    .mobile-menu-btn {
+        display: none !important;
+    }
+}
+.nav-links a {
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+
+}
+
+    .hamburger-icon {
+        width: 30px;
+        height: 24px;
+        position: relative;
+        margin: 0 auto;
+        transform: rotate(0deg);
+        transition: .5s ease-in-out;
+        cursor: pointer;
+    }
+
+    .hamburger-icon span {
+        display: block;
+        position: absolute;
+        height: 3px;
+        width: 100%;
+        background: var(--light);
+        border-radius: 3px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: .25s ease-in-out;
+    }
+
+    .hamburger-icon span:nth-child(1) {
+        top: 0px;
+    }
+
+    .hamburger-icon span:nth-child(2),
+    .hamburger-icon span:nth-child(3) {
+        top: 10px;
+    }
+
+    .hamburger-icon span:nth-child(4) {
+        top: 20px;
+    }
+
+    .menu-toggle:checked + .mobile-menu-btn .hamburger-icon span:nth-child(1) {
+        top: 10px;
+        width: 0%;
+        left: 50%;
+        opacity: 0;
+    }
+
+    .menu-toggle:checked + .mobile-menu-btn .hamburger-icon span:nth-child(2) {
+        transform: rotate(45deg);
+    }
+
+    .menu-toggle:checked + .mobile-menu-btn .hamburger-icon span:nth-child(3) {
+        transform: rotate(-45deg);
+    }
+
+    .menu-toggle:checked + .mobile-menu-btn .hamburger-icon span:nth-child(4) {
+        top: 10px;
+        width: 0%;
+        left: 50%;
+        opacity: 0;
+    }
+
+    /* Mobil Menü Stilleri */
+    .nav-links {
+        transition: all 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    }
+.header {
+    display: flex;
+    justify-content: space-between; /* varsa zaten iyi */
+    align-items: center;
+}
+
+    @media (max-width: 768px) {
+        .mobile-menu-btn {
+            display: flex;
+            align-items:center;
+            justify-content: center;
+        }
+        .nav-links {
+    margin-left: auto; /* sola boşluk bırakıp sağa kaydırır */
+    gap: 2rem;
+}
+
+        .nav-links {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            max-width: 80%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 0 40px;
+            gap: 2.5rem;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            border-left: 1px solid rgba(5, 195, 255, 0.2);
+            z-index: 1050;
+        }
+        
+        .nav-links a {
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .menu-toggle:checked ~ .nav-links {
+            right: 0;
+        }
+        
+        .menu-toggle:checked ~ .nav-links a {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.3s;
+        }
+        
+        .menu-toggle:checked ~ .nav-links a:nth-child(2) { transition-delay: 0.25s; }
+        .menu-toggle:checked ~ .nav-links a:nth-child(3) { transition-delay: 0.3s; }
+        .menu-toggle:checked ~ .nav-links a:nth-child(4) { transition-delay: 0.35s; }
+        .menu-toggle:checked ~ .nav-links a:nth-child(5) { transition-delay: 0.4s; }
+        .menu-toggle:checked ~ .nav-links a:nth-child(6) { transition-delay: 0.45s; }
+        
+        /* Overlay ekleyelim */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle:checked ~ .menu-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    .nav-links {
+    margin-left: auto;
+}
+
+    .nav-links a:hover {
+    color: var(--secondary);
+    transition: all 0.3s ease;
+}
+
+.hamburger-icon:hover span {
+    background-color: var(--secondary); /* ya da istediğin başka bir renk */
+}
+
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating float1"></div>
+    <div class="floating float2"></div>
+    <div class="floating float3"></div>
+    
+               <!-- Header Section -->
+<header class="header">
+    <div class="logo">Kodroyale</div>
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="mobile-menu-btn">
+        <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </label>
+    <nav class="nav-links" id="navLinks">
+            <a href="#basics">Temel Konular</a>
+            <a href="#intermediate">Orta Seviye</a>
+            <a href="#advanced">İleri Seviye</a>
+    </nav>
+    <div class="menu-overlay"></div>
+</header>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Python Eğitimi</h1>
+        <p>Bu sayfada Python programlama dilinin temellerinden ileri seviye konularına kadar kapsamlı bir eğitim içeriği bulabilirsin.</p>
+        <a href="#basics" class="hero-btn">Öğrenmeye Başla <i class="fas fa-arrow-right"></i></a>
+    </section>
+    
+    <!-- Basic Topics Section -->
+    <section class="content-section" id="basics">
+        <h2 class="section-title">Temel Konular</h2>
+        
+        <div class="topics-container">
+            <!-- Topic 1 -->
+            <div class="topic-card" data-topic="intro">
+                <div class="topic-header">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Python'a Giriş</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Python nedir, neden kullanılır, kurulum ve ilk programımız.</p>
+                    <a href="{% url 'python_giriş' %}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 2 -->
+            <div class="topic-card" data-topic="variables">
+                <div class="topic-header">
+                    <i class="fas fa-box"></i>
+                    <h3>Değişkenler ve Veri Tipleri</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Değişkenler nasıl tanımlanır, veri tipleri ve tip dönüşümleri.</p>
+                    <a href="{% url 'python değişkenler' %}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 3 -->
+            <div class="topic-card" data-topic="operators">
+                <div class="topic-header">
+                    <i class="fas fa-not-equal"></i>
+                    <h3>Operatörler</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Aritmetik, karşılaştırma, mantıksal ve diğer operatörlerin kullanımı.</p>
+                    <a href="{% url 'python operatörler' %}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 4 -->
+            <div class="topic-card" data-topic="ifelse">
+                <div class="topic-header">
+                    <i class="fas fa-code-branch"></i>
+                    <h3>If-Else Yapıları</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Koşullu ifadeler, if-elif-else yapıları ve kullanım örnekleri.</p>
+                    <a href="{% url 'python_if_else' %}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 5 -->
+            <div class="topic-card" data-topic="loops">
+                <div class="topic-header">
+                    <i class="fas fa-sync"></i>
+                    <h3>Döngüler</h3>
+                </div>
+                <div class="topic-content">
+                    <p>For ve while döngüleri, döngü kontrol komutları ve örnekler.</p>
+                    <a href="{% url 'python döngüler' %}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            <div class="topic-card" data-topic="input-output">
+                <div class="topic-header">
+                    <i class="fas fa-terminal"></i>
+                    <h3>Girdi ve Çıktı İşlemleri</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Input fonksiyonu, print fonksiyonu ve formatlı çıktı oluşturma teknikleri.</p>
+                    <a href="{%url 'python girdi'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="comments">
+                <div class="topic-header">
+                    <i class="fas fa-comment"></i>
+                    <h3>Yorum Satırları</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Tek satır yorumlar, çok satırlı yorumlar ve dokümantasyon stringleri (docstrings).</p>
+                    <a href="{%url 'python yorum'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Topic 6 -->
+            <div class="topic-card" data-topic="strings">
+                <div class="topic-header">
+                    <i class="fas fa-quote-right"></i>
+                    <h3>String İşlemleri</h3>
+                </div>
+                <div class="topic-content">
+                    <p>String metodları, formatlama, dilimlenme ve string operasyonları.</p>
+                    <a href="{%url 'python_string'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Intermediate Topics Section -->
+    <section class="content-section" id="intermediate">
+        <h2 class="section-title">Orta Seviye Konular</h2>
+        
+        <div class="topics-container">
+            <!-- Topic 7 -->
+            <div class="topic-card" data-topic="lists">
+                <div class="topic-header">
+                    <i class="fas fa-list"></i>
+                    <h3>Listeler</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Liste oluşturma, liste metodları ve liste işlemleri.</p>
+                    <a href="{%url 'python listeler'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 8 -->
+            <div class="topic-card" data-topic="tuples">
+                <div class="topic-header">
+                    <i class="fas fa-link"></i>
+                    <h3>Tuples</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Değiştirilemez veri yapısı olan tuple'lar ve kullanımları.</p>
+                    <a href="{%url 'python turples'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 9 -->
+            <div class="topic-card" data-topic="dictionaries">
+                <div class="topic-header">
+                    <i class="fas fa-book"></i>
+                    <h3>Sözlükler</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Anahtar-değer çiftleri ile çalışma, sözlük metodları ve işlemleri.</p>
+                    <a href="{%url 'python_sözlükler'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="comprehensions">
+                <div class="topic-header">
+                    <i class="fas fa-compress"></i>
+                    <h3>Liste/Sözlük Üreteçleri</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Liste, sözlük ve küme üreteçleri (comprehensions) ile kompakt ve etkili kod yazımı.</p>
+                    <a href="{%url 'python_türeç'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="args-kwargs">
+                <div class="topic-header">
+                    <i class="fas fa-asterisk"></i>
+                    <h3>*args ve **kwargs</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Değişken sayıda argüman alan fonksiyonlar ve isimlendirme prensipleri.</p>
+                    <a href="{%url 'python_args'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="date-time">
+                <div class="topic-header">
+                    <i class="fas fa-clock"></i>
+                    <h3>Tarih ve Zaman İşlemleri</h3>
+                </div>
+                <div class="topic-content">
+                    <p>datetime modülü, zaman dilimleri, tarih formatları ve hesaplamalar.</p>
+                    <a href="{%url 'python_time'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 11 -->
+            <div class="topic-card" data-topic="functions">
+                <div class="topic-header">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Fonksiyonlar</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Fonksiyon tanımlama, parametre türleri, return değerleri ve lambda fonksiyonlar.</p>
+                    <a href="{%url 'python_fonksiyon'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+
+            
+    </section>
+    
+    <!-- Advanced Topics Section -->
+    <section class="content-section" id="advanced">
+        <h2 class="section-title">İleri Seviye Konular</h2>
+        
+        <div class="topics-container">
+            <!-- Topic 13 -->
+            <div class="topic-card" data-topic="oop">
+                <div class="topic-header">
+                    <i class="fas fa-sitemap"></i>
+                    <h3>Nesne Yönelimli Programlama (OOP)</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Sınıflar, nesneler, miras, çok biçimlilik ve kapsülleme kavramları.</p>
+                    <a href="{%url 'python oop'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 14 -->
+            <div class="topic-card" data-topic="files">
+                <div class="topic-header">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>Dosya İşlemleri</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Dosya okuma, yazma, güncelleme ve dosya yönetimi.</p>
+                    <a href="{%url 'python dosya'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 15 -->
+            <div class="topic-card" data-topic="exceptions">
+                <div class="topic-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Hata Yakalama</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Try-except blokları, hata türleri ve özel hata tanımlama.</p>
+                    <a href="{%url 'python hata'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            <div class="topic-card" data-topic="context-managers">
+                <div class="topic-header">
+                    <i class="fas fa-door-open"></i>
+                    <h3>Context Managers</h3>
+                </div>
+                <div class="topic-content">
+                    <p>With ifadesi, kendi context manager'larınızı oluşturma ve kullanım alanları.</p>
+                    <a href="{%url 'python context'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="metaclasses">
+                <div class="topic-header">
+                    <i class="fas fa-chess-king"></i>
+                    <h3>Metaclass'lar</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Sınıf oluşturma sürecini özelleştirme, metaclass kavramı ve uygulamaları.</p>
+                    <a href="{%url 'python metaclass'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="concurrency">
+                <div class="topic-header">
+                    <i class="fas fa-random"></i>
+                    <h3>Eşzamanlılık</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Threading, multiprocessing, asyncio ve paralel işlem teknikleri.</p>
+                    <a href="{%url 'python eşzamanlılık'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="testing">
+                <div class="topic-header">
+                    <i class="fas fa-vial"></i>
+                    <h3>Test Yazımı</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Unittest, pytest gibi kütüphanelerle test yazımı ve test odaklı geliştirme.</p>
+                    <a href="{%url 'python test'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="virtual-environments">
+                <div class="topic-header">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Sanal Ortamlar</h3>
+                </div>
+                <div class="topic-content">
+                    <p>venv, virtualenv ve paket yönetimi ile izole geliştirme ortamları oluşturma.</p>
+                    <a href="{%url 'python sanal'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="regex">
+                <div class="topic-header">
+                    <i class="fas fa-search"></i>
+                    <h3>Düzenli İfadeler</h3>
+                </div>
+                <div class="topic-content">
+                    <p>regex modülü ile karmaşık metin arama ve değiştirme işlemleri.</p>
+                    <a href="{%url 'python düzen'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="web-scraping">
+                <div class="topic-header">
+                    <i class="fas fa-spider"></i>
+                    <h3>Web Scraping</h3>
+                </div>
+                <div class="topic-content">
+                    <p>BeautifulSoup ve Requests kütüphaneleri ile web sayfalarından veri çekme.</p>
+                    <a href="{%url 'python scraping'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="topic-card" data-topic="api-dev">
+                <div class="topic-header">
+                    <i class="fas fa-server"></i>
+                    <h3>API Geliştirme</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Flask ve FastAPI ile RESTful API oluşturma ve web servisleri geliştirme.</p>
+                    <a href="{%url 'python api'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            <!-- Topic 16 -->
+            <div class="topic-card" data-topic="decorators">
+                <div class="topic-header">
+                    <i class="fas fa-gift"></i>
+                    <h3>Dekoratörler</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Fonksiyon dekoratörleri, sınıf dekoratörleri ve kullanım örnekleri.</p>
+                    <a href="{%url 'python decorators'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Topic 17 -->
+            <div class="topic-card" data-topic="generators">
+                <div class="topic-header">
+                    <i class="fas fa-stream"></i>
+                    <h3>Jeneratörler ve Iterator'lar</h3>
+                </div>
+                <div class="topic-content">
+                    <p>Jeneratör fonksiyonlar, yield ifadesi ve iterator protokolü.</p>
+                    <a href="{%url 'python jenerators'%}" class="learn-more">Daha Fazla <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-logo">Kodroyale</div>
+        <p class="copyright">© 2025 Kodroyale. Tüm hakları saklıdır.</p>
+    </footer>
+     <script>
+                document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        // Menü linklerine tıklandığında menüyü kapat
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                menuToggle.checked = false;
+            });
+        });
+        
+        // Overlay'e tıklandığında menüyü kapat
+        menuOverlay.addEventListener('click', function() {
+            menuToggle.checked = false;
+        });
+        
+        // Sayfa kaydırıldığında menüyü kapat
+        window.addEventListener('scroll', function() {
+            if (menuToggle.checked) {
+                menuToggle.checked = false;
+            }
+        });
+        
+        // Escape tuşuna basıldığında menüyü kapat
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && menuToggle.checked) {
+                menuToggle.checked = false;
+            }
+        });
+    });
+               </script>
+</body>
+</html>      

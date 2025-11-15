@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python'da Apiler - Kodroyale</title>
+    <meta name="description" content="Kodroyale ile sıfırdan Python'da Apiler eğitimi: örneklerle sade anlatım, modern tasarım ve eksiksiz içerikle yazılım öğrenin.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #306998;          /* Python mavi */
+    --primary-dark: #1D415E;     /* Koyu Python mavi */
+    --secondary: #FFD43B;        /* Python sarı */
+    --accent: #4B8BBE;           /* Python açık mavi */
+    --accent-second: #64A334;    /* Python yılan yeşili */
+    --dark: #000000;             /* Koyu arka plan */
+    --darker: #000000;           /* Daha koyu arka plan */
+    --light: #F5F5F5;            /* Açık metin */
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+    --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+    --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 4%;
+    backdrop-filter: blur(6px); /* Daha hafif blur */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Daha ince çizgi */
+  }
+
+  .header .logo {
+    font-size: 1.5rem; /* Daha küçük logo */
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+/* Şık kutuları için mobilde daha yuvarlak ve dengeli görünüm */
+.option {
+  padding: 1rem;
+  border-radius: 12px; /* Daha yuvarlak kenar */
+  flex-wrap: wrap;     /* Küçük ekranlarda içeriğin taşmasını önler */
+  justify-content: flex-start;
+}
+
+/* Seçenek işaretçisi (A, B, C, D) için tam yuvarlak stil */
+.option-marker {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.welcome h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+        align-items: center;
+        display: flex;
+        
+    }
+    * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+    .welcome p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+body {
+    background: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--light);
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* === Header & Navigation === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 1rem 10%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.footer-nav a:hover {
+    color: var(--secondary);
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--light);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 999;
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav a:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-5px);
+}
+
+/* === Main Content === */
+.main-content {
+    margin-top: 120px;
+    padding: 0 10%;
+}
+
+.lesson-title {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.lesson-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.lesson-subtitle {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.lesson-subtitle::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.section:hover .lesson-subtitle::before {
+    width: 100%;
+}
+
+.lesson-text {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.highlight {
+    color: var(--secondary);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--secondary);
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.code-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.info-box {
+    background: rgba(48, 105, 152, 0.1);
+    border-left: 3px solid var(--primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(48, 105, 152, 0));
+    z-index: -1;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-box h4 i {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* === Section Styling === */
+.section {
+    margin-bottom: 4rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    top:50px;
+}
+
+
+.nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+                        top: 15px;
+
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow);
+}
+
+.section:hover::before {
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(255, 212, 59, 0.1));
+}
+
+/* === Projects Section === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gradient);
+    transition: height 0.4s ease;
+    border-radius: 4px 0 0 4px;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+
+}
+
+.project-card:hover::before {
+    height: 100%;
+}
+
+.project-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover h4 {
+    transform: translateX(10px);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .difficulty {
+    transform: scale(1.05);
+}
+
+.beginner {
+    background: rgba(100, 163, 52, 0.2);
+    color: #64A334;
+    border: 1px solid #64A334;
+}
+
+.intermediate {
+    background: rgba(255, 212, 59, 0.2);
+    color: #FFD43B;
+    border: 1px solid #FFD43B;
+}
+
+.advanced {
+    background: rgba(255, 61, 61, 0.2);
+    color: #FF3D3D;
+    border: 1px solid #FF3D3D;
+}
+
+/* === Resources Section === */
+.resources-list {
+    margin-top: 1.5rem;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    border-radius: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.resource-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 212, 59, 0.1), transparent);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.resource-item:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 5px 15px rgba(48, 105, 152, 0.3);
+}
+
+.resource-item:hover::after {
+    width: 100%;
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.resource-info h4 {
+    margin-bottom: 0.3rem;
+    color: var(--light);
+    transition: color 0.3s ease;
+}
+
+.resource-item:hover .resource-info h4 {
+    color: var(--secondary);
+}
+
+.resource-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.resource-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.resource-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.resource-link:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.resource-link:hover::after {
+    width: 100%;
+}
+
+.resource-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.resource-link:hover i {
+    transform: translateX(3px);
+}
+
+/* === Quiz Section === */
+.quiz-container {
+    margin-top: 2rem;
+}
+
+.quiz-question {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quiz-question:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px rgba(216, 204, 30, 0.536), 0 0 2px 2px rgba(141, 204, 25, 0.633);
+
+}
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--light);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: var(--gradient);
+    border-radius: 3px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.option:hover::after {
+    left: 100%;
+}
+
+.option.correct {
+    background: rgba(100, 163, 52, 0.2);
+    border-color: var(--accent-second);
+    animation: pulse 1s ease;
+}
+
+.option.incorrect {
+    background: rgba(255, 61, 61, 0.2);
+    border-color: #FF3D3D;
+    animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.option-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.option:hover .option-marker {
+    border-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.option.correct .option-marker {
+    background: var(--accent-second);
+    border-color: var(--accent-second);
+    color: var(--dark);
+}
+
+.option.incorrect .option-marker {
+    background: #FF3D3D;
+    border-color: #FF3D3D;
+    color: var(--dark);
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: none;
+    border-radius: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: rgba(100, 163, 52, 0.1);
+    border-left: 3px solid var(--accent-second);
+    color: #9CDE50;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feedback.incorrect {
+    background: rgba(255, 61, 61, 0.1);
+    border-left: 3px solid #FF3D3D;
+    color: #FF7373;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Footer === */
+.footer {
+    background: var(--darker);
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.copyright:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* === Scroll to Top Button === */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 997;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* === Animations === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Media Queries === */
+@media (max-width: 992px) {
+    .header, .main-content, .footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2.4rem;
+    }
+    
+    .footer-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.2rem 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 1.7rem;
+    }
+    
+    .info-box, .code-block {
+        padding: 1.2rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 5% 1.5rem;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem 5%;
+    }
+    
+    .header .logo {
+        font-size: 1.6rem;
+    }
+    
+    .lesson-title {
+        font-size: 1.8rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resource-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .back-button {
+        font-size: 0.9rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .option {
+        padding: 0.8rem;
+    }
+}
+.pxx {
+    font-size: 1.2rem;
+    margin: 2rem auto;
+    color: #e6e6fa;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 800px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0 1.5rem;
+}
+    /* Mevcut CSS'e eklenecek kısımlar */
+/* Mevcut CSS'e eklenecek kısımlar */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+/* Geri Dön butonu için özel stil */
+.back-button:hover {
+    transform: translateY(-2px);
+    animation: boxx 0.3s ease forwards;
+}
+
+@keyframes boxx {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+    }
+}
+
+
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+    .nav-links .back-button {
+        margin-left: auto;
+    }
+}
+
+
+/* Küçük ekranlar için media query */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 1rem;
+        transition: right 0.5s ease;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    /* Back button mobil özelleştirme */
+   
+    /* Hamburger menü animasyonu */
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00c3ff;
+}
+
+/* Daha yumuşak geçişler için */
+.nav-links a {
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00c3ff;
+}
+
+/* Hamburger çubuklarını biraz daha belirgin yapmak için */
+.hamburger-menu .bar {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+    </style>
+    <!-- Header Section -->
+<header class="header">
+    <div class="logo">Kodroyale</div>
+    
+    <!-- Hamburger menü butonu ekleniyor -->
+    <div class="hamburger-menu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <!-- v sınıfını nav-links olarak değiştiriyoruz -->
+    <div class="footer-nav nav-links">
+        <a href="#projects">Projeler</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#resources">Kaynaklar</a>
+        <a href="#next-steps">Sonraki Adımlar</a>
+        <a href="{% url 'python' %}" class="ack-button">
+            <i class="fas fa-arrow-left"></i> Geri Dön
+        </a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <h1 class="lesson-title">Python ile API Geliştirme</h1>
+    <h6 class="pxx">Bu dersimizde Python'da API nedir, nasıl geliştirilir ve farklı API türleri hakkında bilgi edineceksiniz.</h6>
+    <!-- Introduction Section -->
+    <section class="section">
+        <h2 class="lesson-subtitle">API Nedir?</h2>
+        <p class="lesson-text">
+            API (Application Programming Interface), <span class="highlight">uygulamaların birbirleriyle iletişim kurmasını sağlayan bir arayüzdür</span>. 
+            Bir API, uygulamanın özelliklerini veya verilerini başka uygulamalarla paylaşmak için tanımlanmış bir dizi kural ve protokoldür.
+        </p>
+        
+        <p class="lesson-text">
+            Python, <span class="highlight">API geliştirmek için mükemmel bir dildir</span> çünkü zengin kütüphane ekosistemi ve okunabilir sözdizimi ile hızlı geliştirme yapmanıza olanak tanır.
+        </p>
+        
+        <div class="code-block">
+# Basit bir Flask API örneği
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/hello', methods=['GET'])
+def hello():
+return jsonify({"message": "Merhaba, API Dünyası!"})
+
+if __name__ == '__main__':
+app.run(debug=True)</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-lightbulb"></i> Biliyor muydunuz?</h4>
+            <p>Web API'leri genellikle REST (Representational State Transfer) mimarisi kullanılarak tasarlanır, ancak gRPC, GraphQL gibi farklı API modelleri de yaygın olarak kullanılmaktadır.</p>
+        </div>
+        
+        <h2 class="lesson-subtitle">API Tasarım Prensipleri</h2>
+        <p class="lesson-text">
+            İyi bir API tasarımı için göz önünde bulundurulması gereken bazı prensipler vardır:
+        </p>
+        <ul class="lesson-text">
+            <li><span class="highlight">Tutarlılık</span>: API'nizin tüm bölümleri benzer şekilde davranmalıdır.</li>
+            <li><span class="highlight">Basitlik</span>: API'niz mümkün olduğunca basit ve anlaşılır olmalıdır.</li>
+            <li><span class="highlight">Dokümantasyon</span>: API'niz iyi belgelenmiş olmalıdır.</li>
+            <li><span class="highlight">Güvenlik</span>: API'niz güvenli olmalı ve yetkilendirme içermelidir.</li>
+            <li><span class="highlight">Versiyonlama</span>: Değişiklikler için API versiyonlama stratejisi olmalıdır.</li>
+        </ul>
+        
+        <div class="code-block">
+# RESTful endpoint tasarım örneği
+@app.route('/api/v1/users', methods=['GET'])
+def get_users():
+# Tüm kullanıcıları getir
+return jsonify(users)
+
+@app.route('/api/v1/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+# Belirli bir kullanıcıyı getir
+return jsonify(users.get(user_id))
+
+@app.route('/api/v1/users', methods=['POST'])
+def create_user():
+# Yeni kullanıcı oluştur
+return jsonify({"status": "created"}), 201
+
+@app.route('/api/v1/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+# Kullanıcıyı güncelle
+return jsonify({"status": "updated"})
+
+@app.route('/api/v1/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+# Kullanıcıyı sil
+return jsonify({"status": "deleted"}), 204</div>
+        
+        <h2 class="lesson-subtitle">Python'da API Geliştirme Kütüphaneleri</h2>
+        <p class="lesson-text">
+            Python'da API geliştirmek için kullanabileceğiniz birçok kütüphane vardır:
+        </p>
+        
+        <h3 class="lesson-subtitle">1. Flask</h3>
+        <ul class="lesson-text">
+            <li><span class="highlight">Mikro çerçeve</span>: Hafif ve esnek, küçük ve orta ölçekli API'ler için idealdir</li>
+            <li><span class="highlight">Hızlı başlangıç</span>: Minimum yapılandırma ile hızlıca API geliştirmeye başlayabilirsiniz</li>
+            <li><span class="highlight">Genişletilebilir</span>: İhtiyacınıza göre eklentilerle genişletilebilir</li>
+        </ul>
+        
+        <div class="code-block">
+# Flask ile basit bir API
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Basit bir veritabanı yerine kullanılacak liste
+tasks = [
+{"id": 1, "title": "Alışveriş yap", "done": False},
+{"id": 2, "title": "Raporu tamamla", "done": True}
+]
+
+@app.route('/api/tasks', methods=['GET'])
+def get_tasks():
+return jsonify({"tasks": tasks})
+
+@app.route('/api/tasks/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+task = next((task for task in tasks if task["id"] == task_id), None)
+if task:
+    return jsonify({"task": task})
+return jsonify({"error": "Task not found"}), 404
+
+@app.route('/api/tasks', methods=['POST'])
+def create_task():
+if not request.json or 'title' not in request.json:
+    return jsonify({"error": "Title field is required"}), 400
+
+task = {
+    "id": tasks[-1]["id"] + 1 if tasks else 1,
+    "title": request.json['title'],
+    "done": request.json.get('done', False)
+}
+tasks.append(task)
+return jsonify({"task": task}), 201
+
+if __name__ == '__main__':
+app.run(debug=True)</div>
+        
+        <h3 class="lesson-subtitle">2. Django REST Framework</h3>
+        <ul class="lesson-text">
+            <li><span class="highlight">Güçlü ve kapsamlı</span>: Django'nun üzerine inşa edilmiş, tam özellikli bir REST API çerçevesi</li>
+            <li><span class="highlight">Model tabanlı</span>: Django modelleri üzerinden otomatik API oluşturma</li>
+            <li><span class="highlight">Gelişmiş özellikler</span>: Kimlik doğrulama, izinler, throttling, viewset'ler ve daha fazlası</li>
+        </ul>
+        
+        <div class="code-block">
+# Django REST Framework örneği
+# models.py
+from django.db import models
+
+class Task(models.Model):
+title = models.CharField(max_length=100)
+description = models.TextField(blank=True)
+done = models.BooleanField(default=False)
+created_at = models.DateTimeField(auto_now_add=True)
+
+def __str__(self):
+    return self.title
+
+# serializers.py
+from rest_framework import serializers
+from .models import Task
+
+class TaskSerializer(serializers.ModelSerializer):
+class Meta:
+    model = Task
+    fields = ['id', 'title', 'description', 'done', 'created_at']
+
+# views.py
+from rest_framework import viewsets
+from .models import Task
+from .serializers import TaskSerializer
+
+class TaskViewSet(viewsets.ModelViewSet):
+queryset = Task.objects.all()
+serializer_class = TaskSerializer
+
+# urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import TaskViewSet
+
+router = DefaultRouter()
+router.register(r'tasks', TaskViewSet)
+
+urlpatterns = [
+path('api/', include(router.urls)),
+]</div>
+        
+        <h3 class="lesson-subtitle">3. FastAPI</h3>
+        <ul class="lesson-text">
+            <li><span class="highlight">Modern ve hızlı</span>: ASGI tabanlı, yüksek performanslı framework</li>
+            <li><span class="highlight">Otomatik dokümantasyon</span>: Swagger ve ReDoc ile API dokümantasyonu</li>
+            <li><span class="highlight">Tip kontrolü</span>: Python type hints ile güçlü veri doğrulama</li>
+        </ul>
+        
+        <div class="code-block">
+# FastAPI ile API geliştirme
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
+
+app = FastAPI(title="Task API")
+
+class TaskBase(BaseModel):
+title: str
+description: Optional[str] = None
+done: bool = False
+
+class TaskCreate(TaskBase):
+pass
+
+class Task(TaskBase):
+id: int
+
+class Config:
+    orm_mode = True
+
+# Geçici veritabanı
+db = []
+counter = 0
+
+@app.post("/api/tasks/", response_model=Task, status_code=201)
+def create_task(task: TaskCreate):
+global counter
+counter += 1
+new_task = Task(id=counter, **task.dict())
+db.append(new_task)
+return new_task
+
+@app.get("/api/tasks/", response_model=List[Task])
+def read_tasks():
+return db
+
+@app.get("/api/tasks/{task_id}", response_model=Task)
+def read_task(task_id: int):
+task = next((task for task in db if task.id == task_id), None)
+if task is None:
+    raise HTTPException(status_code=404, detail="Task not found")
+return task</div>
+        
+        <h3 class="lesson-subtitle">4. Connexion</h3>
+        <ul class="lesson-text">
+            <li><span class="highlight">OpenAPI spesifikasyonu</span>: Swagger/OpenAPI spesifikasyonuna göre API tasarımı</li>
+            <li><span class="highlight">Otomatik yönlendirme</span>: API dokümantasyonundan kod yerine koddan dokümantasyon</li>
+            <li><span class="highlight">Şema doğrulama</span>: İstek ve yanıt doğrulama</li>
+        </ul>
+        
+        <div class="code-block">
+# Connexion ile API geliştirme
+import connexion
+from connexion import NoContent
+
+# Veritabanı yerine geçici liste
+TASKS = {}
+
+def get_tasks():
+return [task for task in TASKS.values()], 200
+
+def get_task(task_id):
+task = TASKS.get(task_id)
+return task or NoContent, 200 if task else 404
+
+def create_task(task):
+task_id = len(TASKS) + 1
+task['id'] = task_id
+TASKS[task_id] = task
+return task, 201
+
+def update_task(task_id, task):
+if task_id in TASKS:
+    task['id'] = task_id
+    TASKS[task_id] = task
+    return TASKS[task_id], 200
+return NoContent, 404
+
+def delete_task(task_id):
+if task_id in TASKS:
+    del TASKS[task_id]
+    return NoContent, 204
+return NoContent, 404
+
+# API uygulamasını başlat
+app = connexion.App(__name__, specification_dir='./swagger/')
+app.add_api('swagger.yaml')
+
+if __name__ == '__main__':
+app.run(port=8080)</div>
+        
+        <h2 class="lesson-subtitle">API Güvenliği</h2>
+        <p class="lesson-text">
+            API'nizi güvenli hale getirmek için aşağıdaki yöntemleri kullanabilirsiniz:
+        </p>
+        
+        <div class="code-block">
+# Flask ile JWT tabanlı kimlik doğrulama
+from flask import Flask, jsonify, request
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
+app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'gizli-anahtar-buraya'  # Gerçek uygulamada daha güvenli bir yöntemle saklanmalıdır
+jwt = JWTManager(app)
+
+# Basit kullanıcı veritabanı
+users = {
+'admin': {
+    'password': 'password123',  # Gerçek uygulamada hash'lenmiş olmalıdır
+    'role': 'admin'
+}
+}
+
+@app.route('/api/login', methods=['POST'])
+def login():
+if not request.is_json:
+    return jsonify({"error": "JSON verisi bekleniyor"}), 400
+
+username = request.json.get('username', None)
+password = request.json.get('password', None)
+
+if not username or not password:
+    return jsonify({"error": "Kullanıcı adı ve şifre gerekli"}), 400
+
+user = users.get(username, None)
+if not user or user['password'] != password:
+    return jsonify({"error": "Geçersiz kullanıcı adı veya şifre"}), 401
+
+# Token oluştur
+access_token = create_access_token(identity=username)
+return jsonify(access_token=access_token), 200
+
+@app.route('/api/protected', methods=['GET'])
+@jwt_required()
+def protected():
+# Mevcut kullanıcının kimliğini al
+current_user = get_jwt_identity()
+return jsonify(logged_in_as=current_user), 200
+
+if __name__ == '__main__':
+app.run(debug=True)</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-code"></i> API Güvenlik İpuçları</h4>
+            <p>API güvenliğini artırmak için şu önlemleri alabilirsiniz: HTTPS kullanın, rate limiting uygulayın, API anahtarları veya JWT token'ları kullanın, input doğrulama yapın ve sürekli güvenlik güncellemeleri yapın.</p>
+            <div class="code-block">
+# Flask-Limiter ile rate limiting örneği
+from flask import Flask
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+app = Flask(__name__)
+limiter = Limiter(
+app,
+key_func=get_remote_address,
+default_limits=["200 per day", "50 per hour"]
+)
+
+@app.route("/api/limited")
+@limiter.limit("5 per minute")
+def limited_resource():
+return "Bu endpoint dakikada en fazla 5 istek alabilir."</div>
+        </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <h2 class="lesson-subtitle">Yapılabilecek Projeler</h2>
+        <p class="lesson-text">
+            Python'da API geliştirme konusunda pratik yapmak için aşağıdaki projeleri deneyebilirsiniz:
+        </p>
+        
+        <div class="projects-grid">
+            <div class="project-card">
+                <h4><i class="fas fa-tasks"></i> ToDo API</h4>
+                <p>Görevleri eklemek, listelemek, güncellemek ve silmek için basit bir API geliştirin. JWT ile kimlik doğrulama ekleyin.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-book"></i> Kitaplık API'si</h4>
+                <p>Kitapları yönetmek için CRUD işlemleri sunan, arama ve filtreleme özellikleri olan bir API geliştirin.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-cloud"></i> Hava Durumu API Entegrasyonu</h4>
+                <p>Harici bir hava durumu API'sini kullanarak veri çeken ve kendi API'niz üzerinden sunan bir servis geliştirin.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-shopping-cart"></i> E-Ticaret API'si</h4>
+                <p>Ürünler, kategoriler, kullanıcılar ve siparişler için tam özellikli bir e-ticaret API'si oluşturun. Ödeme entegrasyonu ekleyin.</p>
+                <span class="difficulty intermediate">Orta</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quiz Section -->
+    <section class="section" id="quiz">
+        <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+        <p class="lesson-text">
+            Python'da API geliştirme konusunu ne kadar anladığınızı test etmek için aşağıdaki soruları cevaplayın:
+        </p>
+        
+        <div class="quiz-container">
+            <div class="quiz-question">
+                <p class="question-text">1. REST API'de aşağıdaki HTTP metotlarından hangisi bir kaynağı güncellemek için kullanılır?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">GET</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">POST</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">PUT</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">DELETE</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! PUT metodu, bir kaynağın tamamını güncellemek için kullanılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. PUT metodu, bir kaynağın tamamını güncellemek için kullanılır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">2. Aşağıdaki Python web framework'lerinden hangisi özellikle asenkron API geliştirme için tasarlanmıştır?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Flask</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">FastAPI</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Django</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Bottle</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! FastAPI, ASGI (Asynchronous Server Gateway Interface) üzerine kurulmuş ve asenkron API geliştirme için tasarlanmıştır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. FastAPI, ASGI (Asynchronous Server Gateway Interface) üzerine kurulmuş ve asenkron API geliştirme için tasarlanmıştır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">3. API'de rate limiting hangi amaçla kullanılır?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Veri tabanı bağlantılarını hızlandırmak</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">API dokümantasyonu oluşturmak</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Kullanıcıların kimliğini doğrulamak</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Aşırı API kullanımını sınırlamak</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Rate limiting, belirli bir süre içinde bir kullanıcının veya IP adresinin yapabileceği API isteklerini sınırlar ve böylece DoS saldırılarına ve aşırı kaynak kullanımına karşı koruma sağlar.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Rate limiting, belirli bir süre içinde bir kullanıcının veya IP adresinin yapabileceği API isteklerini sınırlar ve böylece DoS saldırılarına ve aşırı kaynak kullanımına karşı koruma sağlar.
+                </div>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p class="question-text">4. Django REST Framework'te bir model için CRUD işlemleri sağlayan sınıf hangisidir?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">APIView</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">ModelViewSet</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">ModelSerializer</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">GenericView</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! ModelViewSet, Django REST Framework'te bir model için tam CRUD işlemleri sağlayan bir viewset'tir.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. ModelViewSet, Django REST Framework'te bir model için tam CRUD işlemleri sağlayan bir viewset'tir.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">5. Aşağıdakilerden hangisi API kimlik doğrulama yöntemi değildir?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">JWT (JSON Web Token)</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">API Anahtarı (API Key)</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">OAuth 2.0</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">CORS (Cross-Origin Resource Sharing)</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! CORS (Cross-Origin Resource Sharing), kimlik doğrulama yöntemi değil, farklı domainlerden gelen isteklere izin vermeyi kontrol eden bir güvenlik mekanizmasıdır.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. CORS (Cross-Origin Resource Sharing), kimlik doğrulama yöntemi değil, farklı domainlerden gelen isteklere izin vermeyi kontrol eden bir güvenlik mekanizmasıdır.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">6. Flask'ta bir JSON yanıtı döndürmek için hangi fonksiyon kullanılır?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">json.dumps()</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">jsonify()</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">json_response()</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">response.json()</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Flask'ta jsonify() fonksiyonu, Python veri yapılarını JSON yanıtına dönüştürmek için kullanılır.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Flask'ta jsonify() fonksiyonu, Python veri yapılarını JSON yanıtına dönüştürmek için kullanılır.
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p class="question-text">7. Python'da API istekleri yapılırken doğru olan hangisidir?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">Requests kütüphanesi Python'da varsayılan olarak bulunur</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">API istekleri için JavaScript kullanmak zorunludur</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">requests.get() fonksiyonu GET istekleri için kullanılır</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">JSON verileri Python'da doğrudan işlenemez</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Python'da requests kütüphanesindeki get() fonksiyonu REST API'lerden veri çekmek için kullanılan GET istekleri için kullanılır.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Python'da requests kütüphanesindeki get() fonksiyonu REST API'lerden veri çekmek için kullanılan GET istekleri için kullanılır.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">8. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+            <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">import requests
+response = requests.get("https://api.example.com/data")
+print(type(response), type(response.json()))</pre>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">string string</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">json json</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">&lt;class 'requests.models.Response'&gt; &lt;class 'dict'&gt;</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">Response Dictionary</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! requests.get() bir Response nesnesi döndürür ve .json() metodu ise JSON verisini Python sözlüğüne (dict) dönüştürür.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. requests.get() bir Response nesnesi döndürür ve .json() metodu ise JSON verisini Python sözlüğüne (dict) dönüştürür.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">9. Python'da API istekleri için aşağıdakilerden hangisi doğrudur?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">POST istekleri veri almak için kullanılır</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">HTTP status code 404, başarılı bir istek anlamına gelir</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">API anahtarları genellikle headers parametresi ile gönderilir</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">API'ler sadece JSON formatında veri döndürür</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! API anahtarları genellikle requests fonksiyonuna headers parametresi olarak gönderilir. Örneğin: headers={"Authorization": "Bearer YOUR_API_KEY"}
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. API anahtarları genellikle requests fonksiyonuna headers parametresi olarak gönderilir. Örneğin: headers={"Authorization": "Bearer YOUR_API_KEY"}
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">10. Aşağıdakilerden hangisi Python'da REST API kullanımının bir özelliği değildir?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">HTTP protokolü üzerinden çalışır</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">GET, POST, PUT, DELETE gibi metotlar kullanılır</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">JSON veya XML formatında veri alışverişi yapılabilir</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">API istekleri için internet bağlantısı gerekmez</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! API istekleri yapmak için internet bağlantısı gereklidir çünkü uzak sunucularla iletişim kurulur. Yerel API'ler bile bir ağ bağlantısı üzerinden çalışır.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. API istekleri yapmak için internet bağlantısı gereklidir çünkü uzak sunucularla iletişim kurulur. Yerel API'ler bile bir ağ bağlantısı üzerinden çalışır.
+            </div>
+        </div>
+    </section>
+    
+    <!-- Useful Resources Section -->
+    <section class="section" id="resources">
+        <h2 class="lesson-subtitle">Önerilen Kaynaklar</h2>
+        <p class="lesson-text">
+            Python API kullanımı için faydalanabileceğiniz bazı önerilen kaynaklar:
+        </p>
+        
+        <div class="resources-list">
+            <div class="resource-item">
+                <div class="resource-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="resource-info">
+                    <h4>Volkan Çelebi - Python - Flask ile Web Api Yapmak</h4>
+                    <p>Python ile API kullanımı hakkında detaylı ve anlaşılır bir anlatım.</p>
+                    <a href="https://youtu.be/wh4i6C-loOk?si=bHG4TSOxz7LWGSsJ" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            
+            <div class="resource-item">
+                <div class="resource-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="resource-info">
+                    <h4>Recep Emre Erçetin - API Nedir Ne İşe Yarar</h4>
+                    <p>Python'da API konusunu güzel ve açıklayıcı bir şekilde anlatan kapsamlı bir eğitim.</p>
+                    <a href="https://youtu.be/BqpJm99T9Ic?si=zzl7efk4zryuHjT5" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            
+            <div class="resource-item">
+                <div class="resource-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="resource-info">
+                    <h4>Bro Code - Request API data using Python in 8 minutes! ↩️</h4>
+                    <p>Güzel bir anlatım ile API kullanımı hakkında ayrıntılı bilgi.</p>
+                    <a href="https://youtu.be/JVQNywo4AbU?si=I9QaYqfM0iUfuIaT" class="resource-link" target="_blank">Hemen izle<i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            
+            
+        </div>
+    </section>
+    
+    <!-- Next Steps Section -->
+    <section class="section" id="next-steps">
+        <h2 class="lesson-subtitle">Sonraki Adımlar</h2>
+        <p class="lesson-text">
+            Python API kullanımı konusunu tamamladıktan sonra öğrenmenize devam edebileceğiniz konular:
+        </p>
+        
+        <ul class="lesson-text">
+            <li><span class="highlight">API Güvenliği:</span> API anahtarları, OAuth ve token tabanlı kimlik doğrulama yöntemlerini öğrenin.</li>
+            <li><span class="highlight">RESTful API Tasarımı:</span> Kendi API'lerinizi Flask veya Django ile nasıl oluşturacağınızı öğrenin.</li>
+            <li><span class="highlight">Web Scraping:</span> Beautiful Soup ve Selenium ile web verilerini nasıl toplayacağınızı öğrenin.</li>
+            <li><span class="highlight">Asenkron Programlama:</span> asyncio ve aiohttp ile asenkron API istekleri yapmayı öğrenin.</li>
+            <li><span class="highlight">Webhook Entegrasyonu:</span> Webhook'ları kullanarak gerçek zamanlı veri alışverişini öğrenin.</li>
+        </ul>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-trophy"></i> Başarı İpucu</h4>
+            <p>Python'da API kullanımını öğrenirken, ücretsiz API'ler (örneğin JSONPlaceholder, OpenWeatherMap, CoinGecko) ile pratik yaparak farklı HTTP metotlarını ve veri formatlarını keşfedin. API dokümantasyonlarını okumayı alışkanlık haline getirin!</p>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+
+    <p class="copyright">&copy; 2025 Kodroyale | Tüm Hakları Saklıdır</p>
+</footer>
+<script>
+    // Quiz işlevselliği için JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const options = document.querySelectorAll('.option');
+        
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                // Bu sorunun tüm seçeneklerini seçin
+                const parentQuestion = this.closest('.quiz-question');
+                const allOptions = parentQuestion.querySelectorAll('.option');
+                const correctFeedback = parentQuestion.querySelector('.feedback.correct');
+                const incorrectFeedback = parentQuestion.querySelector('.feedback.incorrect');
+                
+                // Önce diğer seçeneklerden sınıfları kaldır
+                allOptions.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                
+                // Tüm geri bildirimleri gizle
+                correctFeedback.style.display = 'none';
+                incorrectFeedback.style.display = 'none';
+                
+                // Doğru cevap kontrolü ve sınıf ekleme
+                const isCorrect = this.getAttribute('data-correct') === 'true';
+                if (isCorrect) {
+                    this.classList.add('correct');
+                    correctFeedback.style.display = 'block';
+                } else {
+                    this.classList.add('incorrect');
+                    incorrectFeedback.style.display = 'block';
+                    
+                    // Doğru cevabı yeşil yap
+                    allOptions.forEach(opt => {
+                        if (opt.getAttribute('data-correct') === 'true') {
+                            opt.classList.add('correct');
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+// Hamburger menü işlevselliği
+document.addEventListener('DOMContentLoaded', function() {
+const hamburger = document.querySelector('.hamburger-menu');
+const navLinks = document.querySelector('.nav-links');
+const body = document.body;
+
+// Hamburger menü tıklama işlevi
+hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+    body.classList.toggle('menu-open'); // Menü açıkken body'nin scroll'unu engellemek için
+});
+
+// Menü bağlantılarına tıklandığında menüyü kapat
+const navItems = document.querySelectorAll('.nav-links a');
+navItems.forEach(item => {
+    item.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+        body.classList.remove('menu-open');
+    });
+});
+
+// Sayfa dışına tıklandığında menüyü kapat
+document.addEventListener('click', function(event) {
+    const isClickInside = navLinks.contains(event.target) || hamburger.contains(event.target);
+    
+    if (!isClickInside && navLinks.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+        body.classList.remove('menu-open');
+    }
+});
+
+// Scroll engelleme için CSS ekleyelim
+const style = document.createElement('style');
+style.textContent = `
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-links {
+            overflow-y: auto;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-links a:last-child {
+            border-bottom: none;
+        }
+        
+        .nav-links .back-button {
+            margin-top: 30px;
+            width: auto;
+        }
+    }
+`;
+document.head.appendChild(style);
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python'da girdi işlemleri - Kodroyale</title>
+    <meta name="description" content="Kodroyale ile sıfırdan Python'da girdi işlemleri eğitimi: örneklerle sade anlatım, modern tasarım ve eksiksiz içerikle yazılım öğrenin.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #306998;          /* Python mavi */
+    --primary-dark: #1D415E;     /* Koyu Python mavi */
+    --secondary: #FFD43B;        /* Python sarı */
+    --accent: #4B8BBE;           /* Python açık mavi */
+    --accent-second: #64A334;    /* Python yılan yeşili */
+    --dark: #000000;             /* Koyu arka plan */
+    --darker: #000000;           /* Daha koyu arka plan */
+    --light: #F5F5F5;            /* Açık metin */
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+    --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+    --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 4%;
+    backdrop-filter: blur(6px); /* Daha hafif blur */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Daha ince çizgi */
+  }
+
+  .header .logo {
+    font-size: 1.5rem; /* Daha küçük logo */
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+/* Şık kutuları için mobilde daha yuvarlak ve dengeli görünüm */
+.option {
+  padding: 1rem;
+  border-radius: 12px; /* Daha yuvarlak kenar */
+  flex-wrap: wrap;     /* Küçük ekranlarda içeriğin taşmasını önler */
+  justify-content: flex-start;
+}
+
+/* Seçenek işaretçisi (A, B, C, D) için tam yuvarlak stil */
+.option-marker {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.welcome h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+        align-items: center;
+        display: flex;
+        
+    }
+    * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+    .welcome p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+body {
+    background: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--light);
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* === Header & Navigation === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 1rem 10%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.footer-nav a:hover {
+    color: var(--secondary);
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--light);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 999;
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav a:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-5px);
+}
+
+/* === Main Content === */
+.main-content {
+    margin-top: 120px;
+    padding: 0 10%;
+}
+
+.lesson-title {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.lesson-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.lesson-subtitle {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.lesson-subtitle::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.section:hover .lesson-subtitle::before {
+    width: 100%;
+}
+
+.lesson-text {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.highlight {
+    color: var(--secondary);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--secondary);
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.code-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.info-box {
+    background: rgba(48, 105, 152, 0.1);
+    border-left: 3px solid var(--primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(48, 105, 152, 0));
+    z-index: -1;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-box h4 i {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* === Section Styling === */
+.section {
+    margin-bottom: 4rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    top:50px;
+}
+
+
+.nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+                        top: 15px;
+
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow);
+}
+
+.section:hover::before {
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(255, 212, 59, 0.1));
+}
+
+/* === Projects Section === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gradient);
+    transition: height 0.4s ease;
+    border-radius: 4px 0 0 4px;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+
+}
+
+.project-card:hover::before {
+    height: 100%;
+}
+
+.project-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover h4 {
+    transform: translateX(10px);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .difficulty {
+    transform: scale(1.05);
+}
+
+.beginner {
+    background: rgba(100, 163, 52, 0.2);
+    color: #64A334;
+    border: 1px solid #64A334;
+}
+
+.intermediate {
+    background: rgba(255, 212, 59, 0.2);
+    color: #FFD43B;
+    border: 1px solid #FFD43B;
+}
+
+.advanced {
+    background: rgba(255, 61, 61, 0.2);
+    color: #FF3D3D;
+    border: 1px solid #FF3D3D;
+}
+
+/* === Resources Section === */
+.resources-list {
+    margin-top: 1.5rem;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    border-radius: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.resource-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 212, 59, 0.1), transparent);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.resource-item:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 5px 15px rgba(48, 105, 152, 0.3);
+}
+
+.resource-item:hover::after {
+    width: 100%;
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.resource-info h4 {
+    margin-bottom: 0.3rem;
+    color: var(--light);
+    transition: color 0.3s ease;
+}
+
+.resource-item:hover .resource-info h4 {
+    color: var(--secondary);
+}
+
+.resource-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.resource-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.resource-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.resource-link:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.resource-link:hover::after {
+    width: 100%;
+}
+
+.resource-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.resource-link:hover i {
+    transform: translateX(3px);
+}
+
+/* === Quiz Section === */
+.quiz-container {
+    margin-top: 2rem;
+}
+
+.quiz-question {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quiz-question:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px rgba(216, 204, 30, 0.536), 0 0 2px 2px rgba(141, 204, 25, 0.633);
+
+}
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--light);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: var(--gradient);
+    border-radius: 3px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.option:hover::after {
+    left: 100%;
+}
+
+.option.correct {
+    background: rgba(100, 163, 52, 0.2);
+    border-color: var(--accent-second);
+    animation: pulse 1s ease;
+}
+
+.option.incorrect {
+    background: rgba(255, 61, 61, 0.2);
+    border-color: #FF3D3D;
+    animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.option-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.option:hover .option-marker {
+    border-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.option.correct .option-marker {
+    background: var(--accent-second);
+    border-color: var(--accent-second);
+    color: var(--dark);
+}
+
+.option.incorrect .option-marker {
+    background: #FF3D3D;
+    border-color: #FF3D3D;
+    color: var(--dark);
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: none;
+    border-radius: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: rgba(100, 163, 52, 0.1);
+    border-left: 3px solid var(--accent-second);
+    color: #9CDE50;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feedback.incorrect {
+    background: rgba(255, 61, 61, 0.1);
+    border-left: 3px solid #FF3D3D;
+    color: #FF7373;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Footer === */
+.footer {
+    background: var(--darker);
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.copyright:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* === Scroll to Top Button === */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 997;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* === Animations === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Media Queries === */
+@media (max-width: 992px) {
+    .header, .main-content, .footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2.4rem;
+    }
+    
+    .footer-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.2rem 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 1.7rem;
+    }
+    
+    .info-box, .code-block {
+        padding: 1.2rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 5% 1.5rem;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem 5%;
+    }
+    
+    .header .logo {
+        font-size: 1.6rem;
+    }
+    
+    .lesson-title {
+        font-size: 1.8rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resource-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .back-button {
+        font-size: 0.9rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .option {
+        padding: 0.8rem;
+    }
+}
+.pxx {
+    font-size: 1.2rem;
+    margin: 2rem auto;
+    color: #e6e6fa;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 800px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0 1.5rem;
+}
+    /* Mevcut CSS'e eklenecek kısımlar */
+/* Mevcut CSS'e eklenecek kısımlar */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+/* Geri Dön butonu için özel stil */
+.back-button:hover {
+    transform: translateY(-2px);
+    animation: boxx 0.3s ease forwards;
+}
+
+@keyframes boxx {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+    }
+}
+
+
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+    .nav-links .back-button {
+        margin-left: auto;
+    }
+}
+
+
+/* Küçük ekranlar için media query */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 1rem;
+        transition: right 0.5s ease;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    /* Back button mobil özelleştirme */
+   
+    /* Hamburger menü animasyonu */
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00c3ff;
+}
+
+/* Daha yumuşak geçişler için */
+.nav-links a {
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00c3ff;
+}
+
+/* Hamburger çubuklarını biraz daha belirgin yapmak için */
+.hamburger-menu .bar {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+    </style>
+<header class="header">
+        <div class="logo">Kodroyale</div>
+        
+        <!-- Hamburger menü butonu ekleniyor -->
+        <div class="hamburger-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <!-- v sınıfını nav-links olarak değiştiriyoruz -->
+        <div class="footer-nav nav-links">
+            <a href="#projects">Projeler</a>
+            <a href="#quiz">Quiz</a>
+            <a href="#resources">Kaynaklar</a>
+            <a href="#next-steps">Sonraki Adımlar</a>
+            <a href="{% url 'python' %}" class="ack-button">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="lesson-title">Python'da Girdi ve Çıktı İşlemleri</h1>
+        <h6 class="pxx">Bu dersimizde Python'da girdi alma, ekrana çıktı verme ve dosya işlemleri hakkında bilgi edineceksiniz.</h6>
+        <!-- Introduction Section -->
+        <section class="section">
+            <h2 class="lesson-subtitle">Kullanıcıdan Girdi Alma</h2>
+            <p class="lesson-text">
+                Python'da kullanıcıdan girdi almak için <span class="highlight">input()</span> fonksiyonu kullanılır. 
+                Bu fonksiyon, kullanıcıya bir mesaj gösterir ve kullanıcının klavyeden bir değer girmesini bekler.
+            </p>
+            
+            <p class="lesson-text">
+                <span class="highlight">input()</span> fonksiyonu her zaman <span class="highlight">string (metin)</span> türünde değer döndürür. 
+                Sayısal bir değer almak istiyorsanız, dönüştürme işlemi yapmanız gerekir.
+            </p>
+            
+            <div class="code-block">
+# Basit girdi alma
+isim = input("Adınız: ")
+print("Merhaba,", isim)
+
+# Sayısal girdi alma
+yas_str = input("Yaşınız: ")
+yas = int(yas_str)  # String'i integer'a dönüştürme
+
+# Tek satırda dönüştürme yapma
+boy = float(input("Boyunuz (metre cinsinden): "))
+
+# Birden fazla girdi alma
+sayi1 = int(input("Birinci sayı: "))
+sayi2 = int(input("İkinci sayı: "))
+toplam = sayi1 + sayi2
+print("Toplam:", toplam)</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-lightbulb"></i> Biliyor muydunuz?</h4>
+                <p>Python 2 ile Python 3 arasında girdi alma fonksiyonları farklıdır. Python 2'de <code>raw_input()</code> ve <code>input()</code> olmak üzere iki farklı fonksiyon vardı. Python 3'te ise sadece <code>input()</code> fonksiyonu bulunur ve Python 2'deki <code>raw_input()</code> fonksiyonu gibi davranır.</p>
+            </div>
+            
+            <h2 class="lesson-subtitle">Ekrana Çıktı Verme</h2>
+            <p class="lesson-text">
+                Python'da ekrana çıktı vermek için en yaygın kullanılan fonksiyon <span class="highlight">print()</span> fonksiyonudur.
+                Bu fonksiyon, verilen değerleri ekrana yazdırır ve varsayılan olarak sonuna yeni satır ekler.
+            </p>
+            
+            <div class="code-block">
+# Temel print kullanımı
+print("Merhaba, Dünya!")
+
+# Birden fazla değeri yazdırma
+ad = "Ali"
+yas = 25
+print("Ad:", ad, "Yaş:", yas)
+
+# Değerleri birleştirerek yazdırma
+print("Ad: " + ad + ", Yaş: " + str(yas))
+
+# f-string kullanımı (Python 3.6+)
+print(f"Ad: {ad}, Yaş: {yas}")
+
+# format() metodu ile biçimlendirme
+print("Ad: {}, Yaş: {}".format(ad, yas))
+print("Ad: {0}, Yaş: {1}".format(ad, yas))
+print("Ad: {ad}, Yaş: {yas}".format(ad=ad, yas=yas))
+
+# Sayısal değerleri biçimlendirme
+pi = 3.14159265359
+print(f"Pi sayısı: {pi:.2f}")  # Ondalık kısmı 2 basamağa sınırlama
+print("Pi sayısı: {:.4f}".format(pi))  # Ondalık kısmı 4 basamağa sınırlama
+
+# Özel karakterler
+print("Birinci satır\nİkinci satır")  # \n yeni satır ekler
+print("Ad:\tAli")  # \t tab karakteri ekler
+print("C:\\Users\\Ali")  # Ters eğik çizgi için çift ters eğik çizgi
+
+# sep ve end parametreleri
+print("Elma", "Armut", "Muz", sep=", ")  # Elemanlar arasına virgül ve boşluk koyar
+print("İşlem devam ediyor", end="... ")  # Sonuna üç nokta koyar ve yeni satıra geçmez
+print("tamamlandı!")</div>
+            
+            <h3 class="lesson-subtitle">print() Fonksiyonunun Parametreleri</h3>
+            <ul class="lesson-text">
+                <li><span class="highlight">sep</span>: Yazdırılan değerler arasında kullanılacak ayırıcı (varsayılan: boşluk)</li>
+                <li><span class="highlight">end</span>: Yazdırma işlemi sonunda eklenecek karakter (varsayılan: '\n', yeni satır)</li>
+                <li><span class="highlight">file</span>: Çıktının yönlendirileceği dosya nesnesi (varsayılan: sys.stdout)</li>
+                <li><span class="highlight">flush</span>: Çıktının hemen yazılıp yazılmayacağını belirler (varsayılan: False)</li>
+            </ul>
+            
+            <div class="code-block">
+# sep parametresi
+print("Elma", "Armut", "Muz")          # Elma Armut Muz
+print("Elma", "Armut", "Muz", sep="-") # Elma-Armut-Muz
+
+# end parametresi
+print("Merhaba", end=" ")
+print("Dünya")  # Merhaba Dünya
+
+# file parametresi
+import sys
+print("Hata mesajı", file=sys.stderr)  # Standart hata akışına yazdırma
+
+# flush parametresi
+import time
+for i in range(5):
+    print(i, end=" ", flush=True)  # Hemen ekrana yazdırır
+    time.sleep(1)</div>
+            
+            <h2 class="lesson-subtitle">String Biçimlendirme (String Formatting)</h2>
+            <p class="lesson-text">
+                Python'da metinleri biçimlendirmek için çeşitli yöntemler bulunmaktadır:
+            </p>
+            
+            <h3 class="lesson-subtitle">1. f-string (Python 3.6+)</h3>
+            <p class="lesson-text">
+                f-string, Python 3.6 ve sonraki sürümlerinde kullanılabilen, kolay ve okunabilir string biçimlendirme yöntemidir.
+            </p>
+            
+            <div class="code-block">
+ad = "Ahmet"
+yas = 30
+boy = 1.75
+
+# Temel f-string kullanımı
+print(f"Merhaba, benim adım {ad}, {yas} yaşındayım ve boyum {boy} metre.")
+
+# Hesaplama yapma
+print(f"5 yıl sonra {yas + 5} yaşında olacağım.")
+
+# Sayısal değerleri biçimlendirme
+print(f"Pi sayısı: {3.14159265359:.2f}")  # 3.14
+print(f"Yüzde: {0.75:.0%}")  # 75%
+
+# Sağa/sola yaslama ve genişlik belirtme
+print(f"|{ad:<10}|")  # Sola yasla, 10 karakter genişliğinde
+print(f"|{ad:>10}|")  # Sağa yasla, 10 karakter genişliğinde
+print(f"|{ad:^10}|")  # Ortala, 10 karakter genişliğinde
+
+# Sayıları biçimlendirme
+print(f"Binary: {42:b}")    # İkili (binary) gösterim: 101010
+print(f"Octal: {42:o}")     # Sekizli (octal) gösterim: 52
+print(f"Hex: {42:x}")       # On altılı (hexadecimal) gösterim: 2a
+print(f"Hex: {42:X}")       # Büyük harfle on altılı: 2A
+
+# Binlik ayırıcı kullanma
+print(f"Büyük sayı: {1234567:,}")  # 1,234,567</div>
+            
+            <h3 class="lesson-subtitle">2. format() Metodu</h3>
+            <p class="lesson-text">
+                format() metodu, Python 2.6 ve sonrasında kullanılabilen esnek bir string biçimlendirme yöntemidir.
+            </p>
+            
+            <div class="code-block">
+ad = "Zeynep"
+yas = 28
+boy = 1.68
+
+# Temel format() kullanımı
+print("Merhaba, benim adım {}, {} yaşındayım ve boyum {} metre.".format(ad, yas, boy))
+
+# İndeks kullanarak sıralama
+print("Boyum {2} metre, {0} yaşındayım ve adım {1}.".format(yas, ad, boy))
+
+# İsimlendirilmiş argümanlar
+print("Merhaba, benim adım {ad}, {yas} yaşındayım.".format(ad=ad, yas=yas))
+
+# Sayısal değerleri biçimlendirme
+print("Pi sayısı: {:.2f}".format(3.14159265359))
+print("Yüzde: {:.0%}".format(0.75))
+
+# Sağa/sola yaslama ve genişlik belirtme
+print("|{:<10}|".format(ad))  # Sola yasla
+print("|{:>10}|".format(ad))  # Sağa yasla
+print("|{:^10}|".format(ad))  # Ortala
+
+# Sayıları biçimlendirme
+print("Binary: {:b}".format(42))
+print("Hex: {:x}".format(42))
+
+# Binlik ayırıcı kullanma
+print("Büyük sayı: {:,}".format(1234567))</div>
+            
+            <h3 class="lesson-subtitle">3. % Operatörü (Eski Yöntem)</h3>
+            <p class="lesson-text">
+                % operatörü, Python'un eski biçimlendirme yöntemidir. Hala kullanılmakla birlikte, yeni projelerde format() veya f-string kullanılması önerilir.
+            </p>
+            
+            <div class="code-block">
+ad = "Mehmet"
+yas = 35
+boy = 1.82
+
+# Temel % operatörü kullanımı
+print("Merhaba, benim adım %s, %d yaşındayım ve boyum %.2f metre." % (ad, yas, boy))
+
+# Yaygın format belirteçleri
+# %s - String
+# %d - Integer
+# %f - Float
+# %x - Hexadecimal
+# %o - Octal
+# %% - % işareti yazdırma
+
+# Genişlik ve hizalama
+print("|%-10s|" % ad)  # Sola yasla
+print("|%10s|" % ad)   # Sağa yasla
+
+# Sayısal değerleri biçimlendirme
+print("Pi: %.2f" % 3.14159265359)  # 3.14</div>
+            
+            <h2 class="lesson-subtitle">Dosya İşlemleri</h2>
+            <p class="lesson-text">
+                Python'da dosya işlemleri, open() fonksiyonu kullanılarak gerçekleştirilir. Bu fonksiyon bir dosya nesnesi döndürür ve
+                bu nesne üzerinden dosya okuma ve yazma işlemleri yapılabilir.
+            </p>
+            
+            <h3 class="lesson-subtitle">1. Dosya Açma ve Kapatma</h3>
+            
+            <div class="code-block">
+# Dosya açma modları:
+# 'r' - Okuma modu (varsayılan)
+# 'w' - Yazma modu (Dosyayı oluşturur veya içeriğini siler)
+# 'a' - Ekleme modu (Dosyayı açar ve sonuna ekleme yapar)
+# 'x' - Özel oluşturma modu (Dosya zaten varsa hata verir)
+# 'b' - İkili (binary) mod
+# 't' - Metin modu (varsayılan)
+
+# Dosya açma
+dosya = open("metin.txt", "r", encoding="utf-8")
+
+# Dosyayı kullanma
+icerik = dosya.read()
+
+# Dosyayı kapatma
+dosya.close()
+
+# Alternatif olarak, with bloğu kullanma (önerilen)
+# Bu şekilde dosya otomatik olarak kapatılır
+with open("metin.txt", "r", encoding="utf-8") as dosya:
+    icerik = dosya.read()
+    print(icerik)</div>
+            
+            <h3 class="lesson-subtitle">2. Dosya Okuma</h3>
+            
+            <div class="code-block">
+# Tüm dosyayı okuma
+with open("metin.txt", "r", encoding="utf-8") as dosya:
+    icerik = dosya.read()
+    print(icerik)
+
+# Satır satır okuma
+with open("metin.txt", "r", encoding="utf-8") as dosya:
+    for satir in dosya:
+        print(satir, end="")  # Satırların sonunda zaten \n olduğu için end="" kullanılır
+
+# readline() ile satır satır okuma
+with open("metin.txt", "r", encoding="utf-8") as dosya:
+    satir = dosya.readline()
+    while satir:
+        print(satir, end="")
+        satir = dosya.readline()
+
+# readlines() ile tüm satırları liste olarak okuma
+with open("metin.txt", "r", encoding="utf-8") as dosya:
+    satirlar = dosya.readlines()
+    for satir in satirlar:
+        print(satir, end="")</div>
+            
+            <h3 class="lesson-subtitle">3. Dosyaya Yazma</h3>
+            
+            <div class="code-block">
+# Dosyaya yazma (içeriği siler)
+with open("yeni.txt", "w", encoding="utf-8") as dosya:
+    dosya.write("Merhaba, Dünya!\n")
+    dosya.write("Python ile dosya işlemleri.\n")
+
+# Dosyaya ekleme
+with open("yeni.txt", "a", encoding="utf-8") as dosya:
+    dosya.write("Bu metin sonradan eklendi.\n")
+
+# Çoklu satır yazma
+satirlar = ["Birinci satır\n", "İkinci satır\n", "Üçüncü satır\n"]
+with open("satirlar.txt", "w", encoding="utf-8") as dosya:
+    dosya.writelines(satirlar)
+
+# print() fonksiyonu ile yazma
+with open("cikti.txt", "w", encoding="utf-8") as dosya:
+    print("Bu metin dosyaya yazdırılacak.", file=dosya)
+    print("Bu da ikinci satır.", file=dosya)</div>
+            
+            <h3 class="lesson-subtitle">4. Dosya Konumu ve Gezinme</h3>
+            
+            <div class="code-block">
+# tell() - Dosya içindeki mevcut konumu verir
+# seek(offset, whence) - Dosya içinde gezinmeyi sağlar
+#   - offset: Kaç bayt ileri/geri gidileceği
+#   - whence: Başlangıç noktası (0: baştan, 1: mevcut konumdan, 2: sondan)
+
+with open("metin.txt", "r", encoding="utf-8") as dosya:
+    # İlk 5 karakteri oku
+    print(dosya.read(5))
+    
+    # Mevcut konumu göster
+    print("Mevcut konum:", dosya.tell())
+    
+    # Dosyanın başına git
+    dosya.seek(0)
+    
+    # Tekrar oku
+    print(dosya.read(10))
+    
+    # 5 karakter daha ileri git
+    dosya.seek(5, 1)
+    print(dosya.read(10))</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-code"></i> Encode ve Decode</h4>
+                <p>Python 3'te, string'ler Unicode karakterleri destekler. Dosya okuma ve yazma işlemlerinde, karakter kodlamasını (encoding) belirtmek önemlidir. Türkçe karakterleri doğru görüntülemek için genellikle "utf-8" kodlaması kullanılır.</p>
+                <div class="code-block">
+# String'i bytes'a dönüştürme (encode)
+metin = "Merhaba, Dünya! Türkçe karakterler: çğıöşü"
+bytes_veri = metin.encode("utf-8")
+print(bytes_veri)
+
+# Bytes'ı string'e dönüştürme (decode)
+yeni_metin = bytes_veri.decode("utf-8")
+print(yeni_metin)</div>
+            </div>
+        </section>
+        
+        <!-- Projects Section -->
+        <section class="section" id="projects">
+            <h2 class="lesson-subtitle">Yapılabilecek Projeler</h2>
+            <p class="lesson-text">
+                Python'da girdi ve çıktı işlemleri konusunda pratik yapmak için aşağıdaki projeleri deneyebilirsiniz:
+            </p>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h4><i class="fas fa-calculator"></i> Basit Hesap Makinesi</h4>
+                    <p>Kullanıcıdan iki sayı ve bir işlem alarak, sonucu hesaplayan ve ekrana yazdıran bir program yazın.</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-book"></i> Not Defteri</h4>
+                    <p>Kullanıcının metin girişi yapabileceği, bu metinleri dosyaya kaydedebileceği ve daha sonra okuyabileceği basit bir not defteri uygulaması geliştirin.</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-file-csv"></i> CSV Dosya İşlemleri</h4>
+                    <p>Kullanıcıdan alınan bilgileri CSV formatında bir dosyaya kaydeden ve bu dosyayı okuyarak ekrana gösteren bir program yazın.</p>
+                    <span class="difficulty intermediate">Orta</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-chart-bar"></i> Veri Analizi</h4>
+                    <p>Bir metin dosyasındaki kelimelerin frekansını hesaplayarak en çok kullanılan kelimeleri bulan ve sonucu şekilli bir şekilde ekrana yazdıran bir program geliştirin.</p>
+                    <span class="difficulty intermediate">Orta</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quiz Section -->
+        <section class="section" id="quiz">
+            <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+            <p class="lesson-text">
+                Python'da girdi ve çıktı işlemleri konusunu ne kadar anladığınızı test etmek için aşağıdaki soruları cevaplayın:
+            </p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <p class="question-text">1. Python'da kullanıcıdan girdi almak için hangi fonksiyon kullanılır?</p>
+                    <div class="options">
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">input()</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">get_input()</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">read()</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">scan()</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! Python'da kullanıcıdan girdi almak için input() fonksiyonu kullanılır.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. Python'da kullanıcıdan girdi almak için input() fonksiyonu kullanılır.
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="question-text">2. input() fonksiyonu hangi veri tipinde değer döndürür?</p>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">int</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">float</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">str</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">bool</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! input() fonksiyonu her zaman string (str) tipinde değer döndürür.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. input() fonksiyonu her zaman string (str) tipinde değer döndürür.
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="question-text">3. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                    <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">print("Python", "Programlama", "Dili", sep="-")</pre>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Python Programlama Dili</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">Python-Programlama-Dili</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">PythonProgramlamaDili</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">Python,Programlama,Dili</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! sep="-" parametresi, yazdırılan değerler arasına tire (-) işareti koyar.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. sep="-" parametresi, yazdırılan değerler arasına tire (-) işareti koyar.
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">4. Aşağıdaki kodlardan hangisi dosyayı yazma modunda açar?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">open("dosya.txt", "r")</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">open("dosya.txt", "w")</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">open("dosya.txt", "rb")</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">open("dosya.txt")</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! "w" parametresi dosyayı yazma modunda açar.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. "w" parametresi dosyayı yazma modunda açar.
+                </div>
+            </div>
+            
+        <!-- Quiz Section -->
+            <div class="quiz-question">
+                <p class="question-text">5. Aşağıdaki hangi fonksiyon Python'da kullanıcıdan girdi almak için kullanılır?</p>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">input()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">readline()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">get()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">scanf()</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da kullanıcıdan girdi almak için input() fonksiyonu kullanılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da kullanıcıdan girdi almak için input() fonksiyonu kullanılır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">6. Aşağıdaki kod parçasının çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">ad = "Ali"
+yas = 25
+print("Merhaba, {} yaşındaki {}!".format(yas, ad))</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Merhaba, Ali yaşındaki 25!</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Merhaba, 25 yaşındaki Ali!</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Merhaba, {yas} yaşındaki {ad}!</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Merhaba, {} yaşındaki {}!</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! format() metodunda süslü parantezler sırasıyla verilen argümanlarla değiştirilir. Bu durumda önce yas (25), sonra ad (Ali) değerleri yerleştirilir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. format() metodunda süslü parantezler sırasıyla verilen argümanlarla değiştirilir. Bu durumda önce yas (25), sonra ad (Ali) değerleri yerleştirilir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">7. Python'da f-string ile ilgili aşağıdakilerden hangisi doğrudur?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Yalnızca Python 2 sürümünde kullanılabilir</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Format metodu ile aynı işlevi göremez</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">String'in başına f veya F koyularak tanımlanır</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">İçinde matematiksel işlemler yapılamaz</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! F-string'ler Python 3.6 ve sonraki sürümlerde kullanılabilen, string'in başına f veya F koyularak tanımlanan ve içinde değişken, ifade ve hatta işlemler kullanılabilen bir özelliktir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. F-string'ler Python 3.6 ve sonraki sürümlerde kullanılabilen, string'in başına f veya F koyularak tanımlanan ve içinde değişken, ifade ve hatta işlemler kullanılabilen bir özelliktir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">8. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">sayi = input("Bir sayı girin: ")
+print(type(sayi))</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">&lt;class 'int'&gt;</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">&lt;class 'float'&gt;</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">&lt;class 'str'&gt;</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">&lt;class 'number'&gt;</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! input() fonksiyonu her zaman string tipinde değer döndürür. Sayısal işlemler için int() veya float() fonksiyonları ile tip dönüşümü yapılması gerekir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. input() fonksiyonu her zaman string tipinde değer döndürür. Sayısal işlemler için int() veya float() fonksiyonları ile tip dönüşümü yapılması gerekir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">9. Aşağıdakilerden hangisi Python'da print() fonksiyonunun parametrelerinden biri değildir?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">end</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">sep</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">file</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">format</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! print() fonksiyonunun end, sep, file, flush gibi parametreleri vardır, ancak format bir parametre değildir. format() ayrı bir string metodudur.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. print() fonksiyonunun end, sep, file, flush gibi parametreleri vardır, ancak format bir parametre değildir. format() ayrı bir string metodudur.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">10. Dosya okuma işlemi için aşağıdakilerden hangisi doğrudur?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">open() fonksiyonu varsayılan olarak dosyayı yazma modunda açar</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">read() metodu dosyanın tüm içeriğini bir string olarak döndürür</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Dosya işlemlerinden sonra close() metodu kullanmak zorunlu değildir</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">readline() metodu dosyanın tamamını satır satır bir liste olarak döndürür</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! read() metodu dosyanın tüm içeriğini bir string olarak döndürür. Tüm satırları liste olarak döndüren metot readlines() metodudur.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. read() metodu dosyanın tüm içeriğini bir string olarak döndürür. Tüm satırları liste olarak döndüren metot readlines() metodudur.
+                </div>
+            </div>
+        </section>
+        
+        <!-- Useful Resources Section -->
+        <section class="section" id="resources">
+            <h2 class="lesson-subtitle">Önerilen Kaynaklar</h2>
+            <p class="lesson-text">
+                Python girdi ve çıktı işlemleri için faydalanabileceğiniz bazı önerilen kaynaklar:
+            </p>
+            
+            <div class="resources-list">
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Python'a Giriş - Sıfırdan Python Dersleri Ders 16: Dosya işlemleri</h4>
+                        <p>Python'da dosya okuma ve yazma işlemleri hakkında kapsamlı bir eğitim.</p>
+                        <a href="https://youtu.be/hO7IRvi2nyw?si=csahsAkRVtEHIGsn" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Dilek ÇAYIRLI - IDLE ile Python Ders 4: Girdi-Çıktı işlemleri</h4>
+                        <p>Python'da girdi ve çıktı işlemleri konusunda temel ve ileri seviye bilgiler.</p>
+                        <a href="https://youtu.be/DokCPAioBhk?si=xLsAoHm6UH00slRA" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Bro Code - Python User İnput</h4>
+                        <p>Girdi çıktı işlemleri hakkında detaylı ve Kaliteli anlatım ayrıca İngilizce.</p>
+                        <a href="https://youtu.be/DB9Cq6TSTuQ?si=6MFRv1m3xzWjOsPc" class="resource-link" target="_blank">Hemen izle<i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        
+        <!-- Next Steps Section -->
+        <section class="section" id="next-steps">
+            <h2 class="lesson-subtitle">Sonraki Adımlar</h2>
+            <p class="lesson-text">
+                Python girdi ve çıktı işlemleri konusunu tamamladıktan sonra öğrenmenize devam edebileceğiniz konular:
+            </p>
+            
+            <ul class="lesson-text">
+                <li><span class="highlight">Hata Yakalama:</span> try-except blokları ile dosya işlemlerinde hata yönetimini öğrenin.</li>
+                <li><span class="highlight">Dizin İşlemleri:</span> os modülü ile dizin oluşturma, silme ve listeleme işlemlerini öğrenin.</li>
+                <li><span class="highlight">JSON İşlemleri:</span> JSON verilerini okuma, yazma ve manipüle etmeyi öğrenin.</li>
+                <li><span class="highlight">CSV İşlemleri:</span> CSV formatında veri okuma ve yazma işlemlerini öğrenin.</li>
+                <li><span class="highlight">Excel İşlemleri:</span> openpyxl kütüphanesi ile Excel dosyalarını işlemeyi öğrenin.</li>
+            </ul>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-trophy"></i> Başarı İpucu</h4>
+                <p>Python'da girdi ve çıktı işlemleri öğrenirken, küçük projeler geliştirerek pratik yapın. Örneğin, basit bir not defteri uygulaması veya telefon rehberi uygulaması gibi projeler dosya işlemlerini pekiştirmenize yardımcı olacaktır!</p>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="copyright">&copy; 2025 Kodroyale | Tüm Hakları Saklıdır</p>
+    </footer>
+    <script>
+        // Quiz işlevselliği için JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Bu sorunun tüm seçeneklerini seçin
+                    const parentQuestion = this.closest('.quiz-question');
+                    const allOptions = parentQuestion.querySelectorAll('.option');
+                    const correctFeedback = parentQuestion.querySelector('.feedback.correct');
+                    const incorrectFeedback = parentQuestion.querySelector('.feedback.incorrect');
+                    
+                    // Önce diğer seçeneklerden sınıfları kaldır
+                    allOptions.forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Tüm geri bildirimleri gizle
+                    correctFeedback.style.display = 'none';
+                    incorrectFeedback.style.display = 'none';
+                    
+                    // Doğru cevap kontrolü ve sınıf ekleme
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        correctFeedback.style.display = 'block';
+                    } else {
+                        this.classList.add('incorrect');
+                        incorrectFeedback.style.display = 'block';
+                        
+                        // Doğru cevabı yeşil yap
+                        allOptions.forEach(opt => {
+                            if (opt.getAttribute('data-correct') === 'true') {
+                                opt.classList.add('correct');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+// Hamburger menü işlevselliği
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger-menu');
+    const navLinks = document.querySelector('.nav-links');
+    const body = document.body;
+
+    // Hamburger menü tıklama işlevi
+    hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        body.classList.toggle('menu-open'); // Menü açıkken body'nin scroll'unu engellemek için
+    });
+
+    // Menü bağlantılarına tıklandığında menüyü kapat
+    const navItems = document.querySelectorAll('.nav-links a');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            body.classList.remove('menu-open');
+        });
+    });
+
+    // Sayfa dışına tıklandığında menüyü kapat
+    document.addEventListener('click', function(event) {
+        const isClickInside = navLinks.contains(event.target) || hamburger.contains(event.target);
+        
+        if (!isClickInside && navLinks.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            body.classList.remove('menu-open');
+        }
+    });
+
+    // Scroll engelleme için CSS ekleyelim
+    const style = document.createElement('style');
+    style.textContent = `
+        body.menu-open {
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                overflow-y: auto;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 15px;
+                width: 100%;
+                text-align: center;
+                font-size: 18px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-links .back-button {
+                margin-top: 30px;
+                width: auto;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
+    </script>
+   
+</body>
+</html>
+            

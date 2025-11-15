@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python'da OOP - Kodroyale</title>
+    <meta name="description" content="Kodroyale ile sıfırdan Python'da oop eğitimi: örneklerle sade anlatım, modern tasarım ve eksiksiz içerikle yazılım öğrenin.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #306998;          /* Python mavi */
+    --primary-dark: #1D415E;     /* Koyu Python mavi */
+    --secondary: #FFD43B;        /* Python sarı */
+    --accent: #4B8BBE;           /* Python açık mavi */
+    --accent-second: #64A334;    /* Python yılan yeşili */
+    --dark: #000000;             /* Koyu arka plan */
+    --darker: #000000;           /* Daha koyu arka plan */
+    --light: #F5F5F5;            /* Açık metin */
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+    --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+    --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 4%;
+    backdrop-filter: blur(6px); /* Daha hafif blur */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Daha ince çizgi */
+  }
+
+  .header .logo {
+    font-size: 1.5rem; /* Daha küçük logo */
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+/* Şık kutuları için mobilde daha yuvarlak ve dengeli görünüm */
+.option {
+  padding: 1rem;
+  border-radius: 12px; /* Daha yuvarlak kenar */
+  flex-wrap: wrap;     /* Küçük ekranlarda içeriğin taşmasını önler */
+  justify-content: flex-start;
+}
+
+/* Seçenek işaretçisi (A, B, C, D) için tam yuvarlak stil */
+.option-marker {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.welcome h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+        align-items: center;
+        display: flex;
+        
+    }
+    * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+    .welcome p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+body {
+    background: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--light);
+    margin: 0;
+    user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* === Header & Navigation === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 1rem 10%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.footer-nav a:hover {
+    color: var(--secondary);
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--light);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 999;
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav a:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-5px);
+}
+
+/* === Main Content === */
+.main-content {
+    margin-top: 120px;
+    padding: 0 10%;
+}
+
+.lesson-title {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.lesson-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.lesson-subtitle {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.lesson-subtitle::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.section:hover .lesson-subtitle::before {
+    width: 100%;
+}
+
+.lesson-text {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.highlight {
+    color: var(--secondary);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--secondary);
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.code-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.info-box {
+    background: rgba(48, 105, 152, 0.1);
+    border-left: 3px solid var(--primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(48, 105, 152, 0));
+    z-index: -1;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-box h4 i {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* === Section Styling === */
+.section {
+    margin-bottom: 4rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    top:50px;
+}
+
+
+.nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+                        top: 15px;
+
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow);
+}
+
+.section:hover::before {
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(255, 212, 59, 0.1));
+}
+
+/* === Projects Section === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gradient);
+    transition: height 0.4s ease;
+    border-radius: 4px 0 0 4px;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+
+}
+
+.project-card:hover::before {
+    height: 100%;
+}
+
+.project-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover h4 {
+    transform: translateX(10px);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .difficulty {
+    transform: scale(1.05);
+}
+
+.beginner {
+    background: rgba(100, 163, 52, 0.2);
+    color: #64A334;
+    border: 1px solid #64A334;
+}
+
+.intermediate {
+    background: rgba(255, 212, 59, 0.2);
+    color: #FFD43B;
+    border: 1px solid #FFD43B;
+}
+
+.advanced {
+    background: rgba(255, 61, 61, 0.2);
+    color: #FF3D3D;
+    border: 1px solid #FF3D3D;
+}
+
+/* === Resources Section === */
+.resources-list {
+    margin-top: 1.5rem;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    border-radius: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.resource-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 212, 59, 0.1), transparent);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.resource-item:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 5px 15px rgba(48, 105, 152, 0.3);
+}
+
+.resource-item:hover::after {
+    width: 100%;
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.resource-info h4 {
+    margin-bottom: 0.3rem;
+    color: var(--light);
+    transition: color 0.3s ease;
+}
+
+.resource-item:hover .resource-info h4 {
+    color: var(--secondary);
+}
+
+.resource-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.resource-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.resource-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.resource-link:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.resource-link:hover::after {
+    width: 100%;
+}
+
+.resource-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.resource-link:hover i {
+    transform: translateX(3px);
+}
+
+/* === Quiz Section === */
+.quiz-container {
+    margin-top: 2rem;
+}
+
+.quiz-question {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quiz-question:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px rgba(216, 204, 30, 0.536), 0 0 2px 2px rgba(141, 204, 25, 0.633);
+
+}
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--light);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: var(--gradient);
+    border-radius: 3px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.option:hover::after {
+    left: 100%;
+}
+
+.option.correct {
+    background: rgba(100, 163, 52, 0.2);
+    border-color: var(--accent-second);
+    animation: pulse 1s ease;
+}
+
+.option.incorrect {
+    background: rgba(255, 61, 61, 0.2);
+    border-color: #FF3D3D;
+    animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.option-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.option:hover .option-marker {
+    border-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.option.correct .option-marker {
+    background: var(--accent-second);
+    border-color: var(--accent-second);
+    color: var(--dark);
+}
+
+.option.incorrect .option-marker {
+    background: #FF3D3D;
+    border-color: #FF3D3D;
+    color: var(--dark);
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: none;
+    border-radius: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: rgba(100, 163, 52, 0.1);
+    border-left: 3px solid var(--accent-second);
+    color: #9CDE50;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feedback.incorrect {
+    background: rgba(255, 61, 61, 0.1);
+    border-left: 3px solid #FF3D3D;
+    color: #FF7373;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Footer === */
+.footer {
+    background: var(--darker);
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.copyright:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* === Scroll to Top Button === */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 997;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* === Animations === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Media Queries === */
+@media (max-width: 992px) {
+    .header, .main-content, .footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2.4rem;
+    }
+    
+    .footer-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.2rem 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 1.7rem;
+    }
+    
+    .info-box, .code-block {
+        padding: 1.2rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 5% 1.5rem;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem 5%;
+    }
+    
+    .header .logo {
+        font-size: 1.6rem;
+    }
+    
+    .lesson-title {
+        font-size: 1.8rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resource-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .back-button {
+        font-size: 0.9rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .option {
+        padding: 0.8rem;
+    }
+}
+.pxx {
+    font-size: 1.2rem;
+    margin: 2rem auto;
+    color: #e6e6fa;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 800px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0 1.5rem;
+}
+    /* Mevcut CSS'e eklenecek kısımlar */
+/* Mevcut CSS'e eklenecek kısımlar */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+/* Geri Dön butonu için özel stil */
+.back-button:hover {
+    transform: translateY(-2px);
+    animation: boxx 0.3s ease forwards;
+}
+
+@keyframes boxx {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+    }
+}
+
+
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+    .nav-links .back-button {
+        margin-left: auto;
+    }
+}
+
+
+/* Küçük ekranlar için media query */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 1rem;
+        transition: right 0.5s ease;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    /* Back button mobil özelleştirme */
+   
+    /* Hamburger menü animasyonu */
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00c3ff;
+}
+
+/* Daha yumuşak geçişler için */
+.nav-links a {
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00c3ff;
+}
+
+/* Hamburger çubuklarını biraz daha belirgin yapmak için */
+.hamburger-menu .bar {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+    </style>
+<header class="header">
+    <div class="logo">Kodroyale</div>
+    
+    <!-- Hamburger menü butonu ekleniyor -->
+    <div class="hamburger-menu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <!-- v sınıfını nav-links olarak değiştiriyoruz -->
+    <div class="footer-nav nav-links">
+        <a href="#projects">Projeler</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#resources">Kaynaklar</a>
+        <a href="#next-steps">Sonraki Adımlar</a>
+        <a href="{% url 'python' %}" class="ack-button">
+            <i class="fas fa-arrow-left"></i> Geri Dön
+        </a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <h1 class="lesson-title">Python'da Nesne Yönelimli Programlama (OOP)</h1>
+    <h6 class="pxx">Bu dersimizde Python'da Nesne Yönelimli Programlama kavramlarını, sınıflar ve nesnelerin nasıl oluşturulduğunu ve kullanıldığını öğreneceksiniz.</h6>
+    <!-- Introduction Section -->
+    <section class="section">
+        <h2 class="lesson-subtitle">Nesne Yönelimli Programlama Nedir?</h2>
+        <p class="lesson-text">
+            Nesne Yönelimli Programlama (OOP), <span class="highlight">programlama problemlerini gerçek hayattaki nesnelere benzer yapılar oluşturarak çözmeyi hedefleyen</span> bir programlama paradigmasıdır. 
+            Bu yaklaşım, kodun yeniden kullanılabilirliğini artırır ve büyük projeleri daha yönetilebilir hale getirir.
+        </p>
+        
+        <p class="lesson-text">
+            Python, nesne yönelimli programlama için <span class="highlight">sınıflar (class) ve nesneler (object)</span> kullanır. 
+            Bir sınıf, nesnelerin şablonu veya taslağı olarak düşünülebilir; nesneler ise bu şablondan üretilen somut örneklerdir.
+        </p>
+        
+        <div class="code-block">
+# Basit bir sınıf tanımlama
+class Araba:
+# Sınıfın özellikleri (attributes)
+marka = "Toyota"
+model = "Corolla"
+yil = 2020
+
+# Sınıfın metodu (method)
+def bilgileri_goster(self):
+    return f"{self.yil} model {self.marka} {self.model}"
+
+# Bir nesne oluşturma
+benim_arabam = Araba()
+print(benim_arabam.bilgileri_goster())  # 2020 model Toyota Corolla</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-lightbulb"></i> Biliyor muydunuz?</h4>
+            <p>Python'da her şey bir nesnedir. Tamsayılar, dizeler, listeler, fonksiyonlar - hepsi birer nesnedir ve belirli sınıfların örnekleridir.</p>
+        </div>
+        
+        <h2 class="lesson-subtitle">OOP'nin Temel Kavramları</h2>
+        <p class="lesson-text">
+            Nesne Yönelimli Programlama dört temel kavram üzerine kurulmuştur:
+        </p>
+        <ul class="lesson-text">
+            <li><span class="highlight">Soyutlama (Abstraction)</span>: Gereksiz detayları gizleyip sadece gerekli özellikleri gösterme.</li>
+            <li><span class="highlight">Kapsülleme (Encapsulation)</span>: Verileri ve bu veriler üzerinde çalışan metotları tek bir birim içinde tutma.</li>
+            <li><span class="highlight">Kalıtım (Inheritance)</span>: Bir sınıfın başka bir sınıfın özellik ve davranışlarını devralması.</li>
+            <li><span class="highlight">Çok Biçimlilik (Polymorphism)</span>: Aynı arayüzün farklı sınıflar için farklı davranışlar sergilemesi.</li>
+        </ul>
+        
+        <h2 class="lesson-subtitle">Sınıflar ve Nesneler</h2>
+        <p class="lesson-text">
+            Python'da sınıf tanımlamak için <code>class</code> anahtar kelimesi kullanılır:
+        </p>
+        
+        <div class="code-block">
+class Ogrenci:
+# Constructor metodu (Başlatıcı)
+def __init__(self, ad, soyad, numara):
+    self.ad = ad
+    self.soyad = soyad
+    self.numara = numara
+    
+# Sınıf metodu
+def tam_ad(self):
+    return f"{self.ad} {self.soyad}"
+
+# Sınıf metodu
+def derece_al(self, ders_notu):
+    if ders_notu >= 90:
+        return "AA"
+    elif ders_notu >= 80:
+        return "BA"
+    elif ders_notu >= 70:
+        return "BB"
+    elif ders_notu >= 60:
+        return "CB"
+    elif ders_notu >= 50:
+        return "CC"
+    else:
+        return "FF"
+
+# Öğrenci nesnesi oluşturma
+ogrenci1 = Ogrenci("Ayşe", "Yılmaz", "12345")
+print(ogrenci1.tam_ad())  # Ayşe Yılmaz
+print(ogrenci1.derece_al(85))  # BA</div>
+        
+        <h3 class="lesson-subtitle">__init__ Metodu</h3>
+        <p class="lesson-text">
+            <code>__init__</code> metodu, sınıfın yapıcı (constructor) metodudur. Bir nesne oluşturulduğunda otomatik olarak çağrılır ve nesnenin başlangıç durumunu ayarlar.
+        </p>
+        <p class="lesson-text">
+            <code>self</code> parametresi, sınıfın kendisini temsil eder ve sınıf içinde sınıfın özelliklerine ve metotlarına erişim sağlar.
+        </p>
+        
+        <div class="code-block">
+class Dikdortgen:
+def __init__(self, uzunluk, genislik):
+    self.uzunluk = uzunluk
+    self.genislik = genislik
+
+def alan_hesapla(self):
+    return self.uzunluk * self.genislik
+
+def cevre_hesapla(self):
+    return 2 * (self.uzunluk + self.genislik)
+
+# Dikdörtgen nesnesi oluşturma
+dikdortgen1 = Dikdortgen(5, 3)
+print(f"Alan: {dikdortgen1.alan_hesapla()}")  # Alan: 15
+print(f"Çevre: {dikdortgen1.cevre_hesapla()}")  # Çevre: 16</div>
+        
+        <h2 class="lesson-subtitle">Kalıtım (Inheritance)</h2>
+        <p class="lesson-text">
+            Kalıtım, bir sınıfın başka bir sınıfın özelliklerini ve davranışlarını devralmasını sağlar. Bu, kod tekrarını azaltır ve hiyerarşik ilişkiler kurmanıza olanak tanır.
+        </p>
+        
+        <div class="code-block">
+# Temel sınıf (Base class / Parent class)
+class Hayvan:
+def __init__(self, isim, yas):
+    self.isim = isim
+    self.yas = yas
+
+def ses_cikar(self):
+    return "Bir ses çıkarıyor..."
+
+def bilgi_goster(self):
+    return f"{self.isim}, {self.yas} yaşında"
+
+# Türetilmiş sınıf (Derived class / Child class)
+class Kopek(Hayvan):
+def __init__(self, isim, yas, cins):
+    # Üst sınıfın yapıcı metodunu çağırma
+    super().__init__(isim, yas)
+    self.cins = cins
+
+# Metot ezme (Method overriding)
+def ses_cikar(self):
+    return "Hav hav!"
+
+def bilgi_goster(self):
+    return f"{super().bilgi_goster()}, {self.cins} cinsi"
+
+# Hayvan nesnesi oluşturma
+hayvan1 = Hayvan("Genel Hayvan", 5)
+print(hayvan1.bilgi_goster())  # Genel Hayvan, 5 yaşında
+print(hayvan1.ses_cikar())  # Bir ses çıkarıyor...
+
+# Köpek nesnesi oluşturma
+kopek1 = Kopek("Karabaş", 3, "Golden")
+print(kopek1.bilgi_goster())  # Karabaş, 3 yaşında, Golden cinsi
+print(kopek1.ses_cikar())  # Hav hav!</div>
+        
+        <h2 class="lesson-subtitle">Kapsülleme (Encapsulation)</h2>
+        <p class="lesson-text">
+            Kapsülleme, sınıfın içindeki verilerin gizlenmesini ve korunmasını sağlar. Python'da, değişkenlerin başına alt çizgi (_) veya çift alt çizgi (__) koyarak onları "gizli" hale getirebilirsiniz.
+        </p>
+        
+        <div class="code-block">
+class BankaHesabi:
+def __init__(self, hesap_no, isim, bakiye):
+    self.hesap_no = hesap_no
+    self.isim = isim
+    self.__bakiye = bakiye  # Özel (private) değişken
+
+# Getter metodu
+def get_bakiye(self):
+    return self.__bakiye
+
+# Setter metodu
+def set_bakiye(self, miktar):
+    if miktar > 0:
+        self.__bakiye = miktar
+    else:
+        print("Bakiye negatif olamaz!")
+
+def para_yatir(self, miktar):
+    if miktar > 0:
+        self.__bakiye += miktar
+        print(f"{miktar} TL yatırıldı. Yeni bakiye: {self.__bakiye} TL")
+    else:
+        print("Geçersiz miktar!")
+
+def para_cek(self, miktar):
+    if 0 < miktar <= self.__bakiye:
+        self.__bakiye -= miktar
+        print(f"{miktar} TL çekildi. Yeni bakiye: {self.__bakiye} TL")
+    else:
+        print("Geçersiz miktar veya yetersiz bakiye!")
+
+# Banka hesabı oluşturma
+hesap1 = BankaHesabi("123456", "Ali Veli", 1000)
+
+# Doğrudan erişim mümkün değil
+# print(hesap1.__bakiye)  # AttributeError: 'BankaHesabi' object has no attribute '__bakiye'
+
+# Getter metoduyla erişim
+print(f"Bakiye: {hesap1.get_bakiye()} TL")  # Bakiye: 1000 TL
+
+# İşlemler
+hesap1.para_yatir(500)  # 500 TL yatırıldı. Yeni bakiye: 1500 TL
+hesap1.para_cek(300)  # 300 TL çekildi. Yeni bakiye: 1200 TL</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-code"></i> İsim Değiştirme (Name Mangling)</h4>
+            <p>Python'da çift alt çizgi (__) ile başlayan değişkenler, sınıf dışından doğrudan erişimi engellemek için isim değiştirme (name mangling) işlemine tabi tutulur. Örneğin, <code>__bakiye</code> değişkeni aslında <code>_BankaHesabi__bakiye</code> olarak saklanır.</p>
+        </div>
+        
+        <h2 class="lesson-subtitle">Çok Biçimlilik (Polymorphism)</h2>
+        <p class="lesson-text">
+            Çok biçimlilik, farklı sınıfların aynı metod adını kullanarak farklı davranışlar sergilemesine olanak tanır. Bu, kodun daha esnek ve genişletilebilir olmasını sağlar.
+        </p>
+        
+        <div class="code-block">
+class Sekil:
+def alan_hesapla(self):
+    pass
+
+class Kare(Sekil):
+def __init__(self, kenar):
+    self.kenar = kenar
+
+def alan_hesapla(self):
+    return self.kenar ** 2
+
+class Daire(Sekil):
+def __init__(self, yaricap):
+    self.yaricap = yaricap
+
+def alan_hesapla(self):
+    return 3.14 * self.yaricap ** 2
+
+# Şekiller oluşturma
+kare = Kare(5)
+daire = Daire(3)
+
+# Çok biçimlilik
+sekiller = [kare, daire]
+for sekil in sekiller:
+print(f"Alan: {sekil.alan_hesapla()}")
+
+# Çıktı:
+# Alan: 25
+# Alan: 28.26</div>
+        
+        <h2 class="lesson-subtitle">Sınıf Değişkenleri ve Örnek Değişkenleri</h2>
+        <p class="lesson-text">
+            Python'da iki tür değişken vardır:
+        </p>
+        <ul class="lesson-text">
+            <li><span class="highlight">Sınıf Değişkenleri (Class Variables)</span>: Tüm örnekler tarafından paylaşılan değişkenlerdir.</li>
+            <li><span class="highlight">Örnek Değişkenleri (Instance Variables)</span>: Her örneğe özgü olan değişkenlerdir.</li>
+        </ul>
+        
+        <div class="code-block">
+class Calisan:
+# Sınıf değişkeni
+sirket = "ABC Şirketi"
+calisan_sayisi = 0
+
+def __init__(self, isim, maas):
+    # Örnek değişkenleri
+    self.isim = isim
+    self.maas = maas
+    Calisan.calisan_sayisi += 1
+
+def bilgi_goster(self):
+    return f"{self.isim}, {self.sirket}'de çalışıyor ve {self.maas} TL maaş alıyor."
+
+@classmethod
+def sirket_degistir(cls, yeni_sirket):
+    cls.sirket = yeni_sirket
+
+# Çalışanlar oluşturma
+calisan1 = Calisan("Ahmet", 5000)
+calisan2 = Calisan("Mehmet", 6000)
+
+print(calisan1.bilgi_goster())  # Ahmet, ABC Şirketi'de çalışıyor ve 5000 TL maaş alıyor.
+print(calisan2.bilgi_goster())  # Mehmet, ABC Şirketi'de çalışıyor ve 6000 TL maaş alıyor.
+print(f"Toplam çalışan sayısı: {Calisan.calisan_sayisi}")  # Toplam çalışan sayısı: 2
+
+# Sınıf değişkenini değiştirme
+Calisan.sirket_degistir("XYZ Şirketi")
+print(calisan1.bilgi_goster())  # Ahmet, XYZ Şirketi'de çalışıyor ve 5000 TL maaş alıyor.
+print(calisan2.bilgi_goster())  # Mehmet, XYZ Şirketi'de çalışıyor ve 6000 TL maaş alıyor.</div>
+        
+        <h2 class="lesson-subtitle">Özel Metotlar (Magic Methods / Dunder Methods)</h2>
+        <p class="lesson-text">
+            Python sınıflarında, çift alt çizgi ile başlayıp biten özel metotlar vardır. Bu metotlar, sınıfın davranışını özelleştirmenize olanak tanır.
+        </p>
+        
+        <div class="code-block">
+class Kitap:
+def __init__(self, baslik, yazar, sayfa_sayisi):
+    self.baslik = baslik
+    self.yazar = yazar
+    self.sayfa_sayisi = sayfa_sayisi
+
+# Nesnenin string gösterimi
+def __str__(self):
+    return f"{self.baslik} - {self.yazar}"
+
+# Nesnenin resmi string gösterimi
+def __repr__(self):
+    return f"Kitap('{self.baslik}', '{self.yazar}', {self.sayfa_sayisi})"
+
+# İki nesnenin karşılaştırılması
+def __eq__(self, other):
+    if not isinstance(other, Kitap):
+        return False
+    return (self.baslik == other.baslik and 
+            self.yazar == other.yazar)
+
+# Nesnelerin sıralanması
+def __lt__(self, other):
+    if not isinstance(other, Kitap):
+        return NotImplemented
+    return self.sayfa_sayisi < other.sayfa_sayisi
+
+# İki nesnenin toplanması
+def __add__(self, other):
+    if isinstance(other, Kitap):
+        toplam_sayfa = self.sayfa_sayisi + other.sayfa_sayisi
+        return f"{self.baslik} ve {other.baslik} kitaplarının toplam sayfa sayısı: {toplam_sayfa}"
+    return NotImplemented
+
+# Kitap nesneleri oluşturma
+kitap1 = Kitap("Python Programlama", "Ahmet Yazar", 350)
+kitap2 = Kitap("Veri Bilimi", "Ayşe Yazar", 450)
+kitap3 = Kitap("Python Programlama", "Ahmet Yazar", 350)
+
+print(kitap1)  # Python Programlama - Ahmet Yazar
+print(repr(kitap2))  # Kitap('Veri Bilimi', 'Ayşe Yazar', 450)
+print(kitap1 == kitap3)  # True (aynı başlık ve yazar)
+print(kitap1 < kitap2)  # True (kitap1'in sayfa sayısı daha az)
+print(kitap1 + kitap2)  # Python Programlama ve Veri Bilimi kitaplarının toplam sayfa sayısı: 800</div>
+        
+        <h2 class="lesson-subtitle">@property Dekoratörü</h2>
+        <p class="lesson-text">
+            <code>@property</code> dekoratörü, bir metodu özellik (property) gibi kullanmanızı sağlar. Bu, değişkenlere daha kontrollü erişim sağlamak için kullanılır.
+        </p>
+        
+        <div class="code-block">
+class Sicaklik:
+def __init__(self, celsius=0):
+    self._celsius = celsius
+
+@property
+def celsius(self):
+    return self._celsius
+
+@celsius.setter
+def celsius(self, deger):
+    if deger < -273.15:
+        raise ValueError("Sıcaklık mutlak sıfırdan düşük olamaz!")
+    self._celsius = deger
+
+@property
+def fahrenheit(self):
+    return (self._celsius * 9/5) + 32
+
+@fahrenheit.setter
+def fahrenheit(self, deger):
+    self.celsius = (deger - 32) * 5/9
+
+# Sıcaklık nesnesi oluşturma
+sicaklik = Sicaklik(25)
+print(f"Celsius: {sicaklik.celsius}°C")  # Celsius: 25°C
+print(f"Fahrenheit: {sicaklik.fahrenheit}°F")  # Fahrenheit: 77.0°F
+
+# Fahrenheit olarak ayarlama
+sicaklik.fahrenheit = 86
+print(f"Celsius: {sicaklik.celsius}°C")  # Celsius: 30.0°C
+print(f"Fahrenheit: {sicaklik.fahrenheit}°F")  # Fahrenheit: 86.0°F
+
+# Hata kontrolü
+try:
+sicaklik.celsius = -300  # ValueError: Sıcaklık mutlak sıfırdan düşük olamaz!
+except ValueError as e:
+print(e)</div>
+        
+        <h2 class="lesson-subtitle">Soyut Sınıflar (Abstract Classes)</h2>
+        <p class="lesson-text">
+            Soyut sınıflar, doğrudan örneklenemeyen ancak alt sınıflar için bir şablon görevi gören sınıflardır. Python'da, <code>abc</code> modülünü kullanarak soyut sınıflar ve metotlar tanımlayabilirsiniz.
+        </p>
+        
+        <div class="code-block">
+from abc import ABC, abstractmethod
+
+class CizimAraci(ABC):
+@abstractmethod
+def ciz(self):
+    pass
+
+@abstractmethod
+def boyut_ayarla(self, boyut):
+    pass
+
+def rengini_goster(self):
+    return "Siyah"  # Zorunlu olmayan metot
+
+class Kalem(CizimAraci):
+def __init__(self, tip="Kurşun", boyut=1):
+    self.tip = tip
+    self.boyut = boyut
+
+def ciz(self):
+    return f"{self.tip} kalem ile çiziliyor."
+
+def boyut_ayarla(self, boyut):
+    self.boyut = boyut
+    return f"Kalem boyutu {boyut} olarak ayarlandı."
+
+class Firca(CizimAraci):
+def __init__(self, tip="Yuvarlak", boyut=5):
+    self.tip = tip
+    self.boyut = boyut
+
+def ciz(self):
+    return f"{self.tip} fırça ile çiziliyor."
+
+def boyut_ayarla(self, boyut):
+    self.boyut = boyut
+    return f"Fırça boyutu {boyut} olarak ayarlandı."
+
+def rengini_goster(self):
+    return "Mavi"  # Metodu ezme (override)
+
+# Soyut sınıfı örnekleyemezsiniz
+# arac = CizimAraci()  # TypeError: Can't instantiate abstract class CizimAraci with abstract methods boyut_ayarla, ciz
+
+# Alt sınıfları örnekleme
+kalem = Kalem()
+firca = Firca()
+
+print(kalem.ciz())  # Kurşun kalem ile çiziliyor.
+print(firca.ciz())  # Yuvarlak fırça ile çiziliyor.
+print(kalem.rengini_goster())  # Siyah
+print(firca.rengini_goster())  # Mavi</div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <h2 class="lesson-subtitle">Yapılabilecek Projeler</h2>
+        <p class="lesson-text">
+            Python'da Nesne Yönelimli Programlama konusunda pratik yapmak için aşağıdaki projeleri deneyebilirsiniz:
+        </p>
+        
+        <div class="projects-grid">
+            <div class="project-card">
+                <h4><i class="fas fa-university"></i> Banka Hesap Sistemi</h4>
+                <p>Farklı hesap türleri (Vadesiz, Vadeli, Kredi) oluşturun ve hesaplar arası para transferi, faiz hesaplama gibi işlemleri gerçekleştiren bir sistem geliştirin.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-car"></i> Araç Kiralama Sistemi</h4>
+                <p>Farklı araç türleri (Otomobil, SUV, Minibüs) ve kiralama seçenekleri sunan bir araç kiralama sistemi oluşturun.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-chess"></i> Satranç Oyunu</h4>
+                <p>Satranç taşlarını ve oyun kurallarını OOP prensiplerine göre modelleyerek basit bir satranç oyunu geliştirin.</p>
+                <span class="difficulty intermediate">Orta</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-desktop"></i> Basit bir Kullanıcı Arayüzü Kütüphanesi</h4>
+                <p>Düğme, metin kutusu, onay kutusu gibi GUI elemanlarını OOP ile modelleyen temel bir kütüphane tasarlayın.</p>
+                <span class="difficulty intermediate">Orta</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quiz Section -->
+    <section class="section" id="quiz">
+        <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+        <p class="lesson-text">
+            Python'da Nesne Yönelimli Programlama konusunu ne kadar anladığınızı test etmek için aşağıdaki soruları cevaplayın:
+        </p>
+        
+        <div class="quiz-container">
+            <div class="quiz-question">
+                <p class="question-text">1. Aşağıdakilerden hangisi Python'da sınıf tanımlamak için kullanılan doğru sözdizimdir?</p>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">class Sinif:</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">def Sinif():</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Sinif class:</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">create Sinif():</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da sınıf tanımlamak için "class" anahtar kelimesi ve ardından sınıf adı kullanılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da sınıf tanımlamak için "class" anahtar kelimesi ve ardından sınıf adı kullanılır.
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">2. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">class Hayvan:
+def __init__(self, isim):
+    self.isim = isim
+    
+kedi = Hayvan("Pamuk")
+print(kedi.isim)</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Hayvan</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Pamuk</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">kedi</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">AttributeError</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! __init__ metodu, sınıfın constructor'ıdır ve nesne oluşturulduğunda isim özelliğine "Pamuk" değeri atanır. print(kedi.isim) ifadesi bu değeri yazdırır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. __init__ metodu, sınıfın constructor'ıdır ve nesne oluşturulduğunda isim özelliğine "Pamuk" değeri atanır. print(kedi.isim) ifadesi bu değeri yazdırır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">3. Aşağıdaki sınıf özelliklerinden hangisi kalıtım (inheritance) özelliğini ifade eder?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Kapsülleme (Encapsulation)</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Soyutlama (Abstraction)</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Miras Alma (Inheritance)</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Çok Biçimlilik (Polymorphism)</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Kalıtım (inheritance), bir sınıfın başka bir sınıftan özellik ve davranışları miras almasıdır. Python'da "class AltSinif(UstSinif)" şeklinde tanımlanır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Kalıtım (inheritance), bir sınıfın başka bir sınıftan özellik ve davranışları miras almasıdır. Python'da "class AltSinif(UstSinif)" şeklinde tanımlanır.
+                </div>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p class="question-text">4. Aşağıdaki koddaki hata nedir?</p>
+            <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">class Ogrenci:
+def __init__(self, isim):
+    self.__isim = isim
+    
+o1 = Ogrenci("Ali")
+print(o1.__isim)</pre>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">IndentationError</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">AttributeError</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">ValueError</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">SyntaxError</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! "__isim" önündeki çift alt çizgi (__) bu değişkeni özel (private) yapar. Python'da özel değişkenlere doğrudan erişilemez, bu yüzden AttributeError hatası alırsınız.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. "__isim" önündeki çift alt çizgi (__) bu değişkeni özel (private) yapar. Python'da özel değişkenlere doğrudan erişilemez, bu yüzden AttributeError hatası alırsınız.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">5. Aşağıdaki işlemin sonucu nedir?</p>
+            <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">class Test:
+x = 0
+
+def __init__(self):
+    Test.x += 1
+    
+a = Test()
+b = Test()
+c = Test()
+print(Test.x)</pre>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">0</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">1</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">3</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">TypeError</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Test.x sınıf değişkenidir ve her nesne oluşturulduğunda bir artırılır. Üç nesne oluşturulduğu için değeri 3 olur.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Test.x sınıf değişkenidir ve her nesne oluşturulduğunda bir artırılır. Üç nesne oluşturulduğu için değeri 3 olur.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">6. Aşağıdaki sınıf tanımlamalarından hangisi doğrudur?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">class Araba(): def __init__: pass</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">class Araba: def __init__(self): pass</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">class Araba def __init__(self): pass</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">class Araba = def __init__(self): pass</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Python'da sınıf tanımlaması "class SınıfAdı:" şeklinde yapılır ve __init__ metodunun ilk parametresi her zaman self olmalıdır.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Python'da sınıf tanımlaması "class SınıfAdı:" şeklinde yapılır ve __init__ metodunun ilk parametresi her zaman self olmalıdır.
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p class="question-text">7. Python'da metot tanımlarken doğru olan hangisidir?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">Metot tanımlarken ilk parametre zorunlu değildir</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">Statik metotlar için @static dekoratörü kullanılır</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">Metot tanımlarken ilk parametre genellikle "self" olarak adlandırılır</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">Bir sınıf içinde sadece bir metot tanımlanabilir</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Python'da instance metotları tanımlarken ilk parametre genellikle "self" olarak adlandırılır ve bu parametre nesnenin kendisini temsil eder.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Python'da instance metotları tanımlarken ilk parametre genellikle "self" olarak adlandırılır ve bu parametre nesnenin kendisini temsil eder.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">8. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+            <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">class Sekil:
+def alan(self):
+    return 0
+    
+class Kare(Sekil):
+def __init__(self, kenar):
+    self.kenar = kenar
+    
+def alan(self):
+    return self.kenar * self.kenar
+    
+s = Kare(5)
+print(s.alan())</pre>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">0</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">10</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">25</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">TypeError</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Bu örnekte, Kare sınıfı Sekil sınıfının alan metodunu override eder (metot ezme). s.alan() çağrısı Kare sınıfının alan metodunu çalıştırır ve 5*5=25 sonucunu döndürür.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Bu örnekte, Kare sınıfı Sekil sınıfının alan metodunu override eder (metot ezme). s.alan() çağrısı Kare sınıfının alan metodunu çalıştırır ve 5*5=25 sonucunu döndürür.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">9. Python'da sınıf (class) için aşağıdakilerden hangisi doğrudur?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">Bir sınıftan sadece bir nesne oluşturulabilir</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">Sınıflar sadece tek bir sınıftan kalıtım alabilir (çoklu kalıtım yoktur)</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">Sınıflar içinde metotlar ve özellikler tanımlanabilir</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">Sınıflarda constructor metodu zorunlu değildir</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Python'da sınıflar içinde metotlar (fonksiyonlar) ve özellikler (değişkenler) tanımlanabilir. Bu, nesne yönelimli programlamanın temel prensibidir.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Python'da sınıflar içinde metotlar (fonksiyonlar) ve özellikler (değişkenler) tanımlanabilir. Bu, nesne yönelimli programlamanın temel prensibidir.
+            </div>
+        </div>
+        
+        <div class="quiz-question">
+            <p class="question-text">10. Aşağıdakilerden hangisi Python'da bir sınıfın özelliği değildir?</p>
+            <div class="options">
+                <div class="option" data-correct="false">
+                    <div class="option-marker">A</div>
+                    <div class="option-text">Çoklu kalıtımı destekler</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">B</div>
+                    <div class="option-text">Metot ezme (override) yapılabilir</div>
+                </div>
+                <div class="option" data-correct="false">
+                    <div class="option-marker">C</div>
+                    <div class="option-text">Sınıf ve instance değişkenleri olabilir</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <div class="option-marker">D</div>
+                    <div class="option-text">Tüm sınıf üyeleri zorunlu olarak private'dır</div>
+                </div>
+            </div>
+            <div class="feedback correct">
+                <i class="fas fa-check-circle"></i> Doğru! Python'da sınıf üyeleri varsayılan olarak public'tir. Özel (private) üyeler için ismin başına çift alt çizgi (__) konulur ama bu tam bir koruma değildir.
+            </div>
+            <div class="feedback incorrect">
+                <i class="fas fa-times-circle"></i> Yanlış. Python'da sınıf üyeleri varsayılan olarak public'tir. Özel (private) üyeler için ismin başına çift alt çizgi (__) konulur ama bu tam bir koruma değildir.
+            </div>
+        </div>
+    </section>
+    
+    <!-- Useful Resources Section -->
+    <section class="section" id="resources">
+        <h2 class="lesson-subtitle">Önerilen Kaynaklar</h2>
+        <p class="lesson-text">
+            Python nesne yönelimli programlama için faydalanabileceğiniz bazı önerilen kaynaklar:
+        </p>
+        
+        <div class="resources-list">
+            <div class="resource-item">
+                <div class="resource-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="resource-info">
+                    <h4>Tech With Tim - Python Object Oriented Programming (OOP) - For Beginners</h4>
+                    <p>Python'da OOP konusunda detaylı ve anlaşılır bir anlatım ayrıca ingilizce.</p>
+                    <a href="https://youtu.be/JeznW_7DlB0?si=GFuU1BMYMQwrRrRS" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            
+            <div class="resource-item">
+                <div class="resource-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="resource-info">
+                    <h4>Python'a Giriş - Sıfırdan Python Dersleri Ders 19: Object Oriented Programming | Nesne Yönelimli Programlama | Class</h4>
+                    <p>Python'da sınıflar ve nesneler hakkında kapsamlı bir eğitim.</p>
+                    <a href="https://youtu.be/7XF4lnUHzc4?si=FHMSGHllsK1QWPN3" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            
+            <div class="resource-item">
+                <div class="resource-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="resource-info">
+                    <h4>Bro Code - Python Object Oriented Programming Full Course 🐍</h4>
+                    <p>Güzel bir anlatım ile Kalıtım ve Polimorfizm hakkında ayrıntılı bilgi ayrıca ingilizce.</p>
+                    <a href="https://youtu.be/IbMDCwVm63M?si=gl_r7taptzY4yBOE" class="resource-link" target="_blank">Hemen izle<i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            
+            
+        </div>
+    </section>
+    
+    <!-- Next Steps Section -->
+    <section class="section" id="next-steps">
+        <h2 class="lesson-subtitle">Sonraki Adımlar</h2>
+        <p class="lesson-text">
+            Python nesne yönelimli programlama konusunu tamamladıktan sonra öğrenmenize devam edebileceğiniz konular:
+        </p>
+        
+        <ul class="lesson-text">
+            <li><span class="highlight">İleri Düzey OOP:</span> Soyut sınıflar, arayüzler ve çoklu kalıtım konularını derinlemesine öğrenin.</li>
+            <li><span class="highlight">Tasarım Desenleri:</span> Singleton, Factory, Observer gibi yaygın tasarım desenlerini öğrenin.</li>
+            <li><span class="highlight">Modül ve Paketler:</span> Kendi modüllerinizi ve paketlerinizi nasıl oluşturacağınızı öğrenin.</li>
+            <li><span class="highlight">Dosya İşlemleri ve Serileştirme:</span> Nesneleri dosyalara nasıl kaydedeceğinizi ve yükleyeceğinizi öğrenin.</li>
+            <li><span class="highlight">Hata Yakalama ve İstisnalar:</span> OOP'de hata yönetimini ve özel istisnalar oluşturmayı öğrenin.</li>
+        </ul>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-trophy"></i> Başarı İpucu</h4>
+            <p>Python'da nesne yönelimli programlamayı öğrenirken, gerçek dünya problemlerini modelleyerek küçük sınıflar ve uygulamalar yazın. Özellikle kalıtım, kapsülleme ve çok biçimlilik prensiplerine odaklanın ve bunları projelerinizde uygulamaya çalışın!</p>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+
+    <p class="copyright">&copy; 2025 Kodroyale | Tüm Hakları Saklıdır</p>
+</footer>
+<script>
+    // Quiz işlevselliği için JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const options = document.querySelectorAll('.option');
+        
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                // Bu sorunun tüm seçeneklerini seçin
+                const parentQuestion = this.closest('.quiz-question');
+                const allOptions = parentQuestion.querySelectorAll('.option');
+                const correctFeedback = parentQuestion.querySelector('.feedback.correct');
+                const incorrectFeedback = parentQuestion.querySelector('.feedback.incorrect');
+                
+                // Önce diğer seçeneklerden sınıfları kaldır
+                allOptions.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                
+                // Tüm geri bildirimleri gizle
+                correctFeedback.style.display = 'none';
+                incorrectFeedback.style.display = 'none';
+                
+                // Doğru cevap kontrolü ve sınıf ekleme
+                const isCorrect = this.getAttribute('data-correct') === 'true';
+                if (isCorrect) {
+                    this.classList.add('correct');
+                    correctFeedback.style.display = 'block';
+                } else {
+                    this.classList.add('incorrect');
+                    incorrectFeedback.style.display = 'block';
+                    
+                    // Doğru cevabı yeşil yap
+                    allOptions.forEach(opt => {
+                        if (opt.getAttribute('data-correct') === 'true') {
+                            opt.classList.add('correct');
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+// Hamburger menü işlevselliği
+document.addEventListener('DOMContentLoaded', function() {
+const hamburger = document.querySelector('.hamburger-menu');
+const navLinks = document.querySelector('.nav-links');
+const body = document.body;
+
+// Hamburger menü tıklama işlevi
+hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+    body.classList.toggle('menu-open'); // Menü açıkken body'nin scroll'unu engellemek için
+});
+
+// Menü bağlantılarına tıklandığında menüyü kapat
+const navItems = document.querySelectorAll('.nav-links a');
+navItems.forEach(item => {
+    item.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+        body.classList.remove('menu-open');
+    });
+});
+
+// Sayfa dışına tıklandığında menüyü kapat
+document.addEventListener('click', function(event) {
+    const isClickInside = navLinks.contains(event.target) || hamburger.contains(event.target);
+    
+    if (!isClickInside && navLinks.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+        body.classList.remove('menu-open');
+    }
+});
+
+// Scroll engelleme için CSS ekleyelim
+const style = document.createElement('style');
+style.textContent = `
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-links {
+            overflow-y: auto;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-links a:last-child {
+            border-bottom: none;
+        }
+        
+        .nav-links .back-button {
+            margin-top: 30px;
+            width: auto;
+        }
+    }
+`;
+document.head.appendChild(style);
+});
+
+</script>
+
+</body>
+</html>

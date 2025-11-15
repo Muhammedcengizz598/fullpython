@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python'da Stringler - Kodroyale</title>
+    <meta name="description" content="Kodroyale ile sıfırdan Python'da Stringler eğitimi: örneklerle sade anlatım, modern tasarım ve eksiksiz içerikle yazılım öğrenin.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #306998;          /* Python mavi */
+    --primary-dark: #1D415E;     /* Koyu Python mavi */
+    --secondary: #FFD43B;        /* Python sarı */
+    --accent: #4B8BBE;           /* Python açık mavi */
+    --accent-second: #64A334;    /* Python yılan yeşili */
+    --dark: #000000;             /* Koyu arka plan */
+    --darker: #000000;           /* Daha koyu arka plan */
+    --light: #F5F5F5;            /* Açık metin */
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+    --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+    --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 4%;
+    backdrop-filter: blur(6px); /* Daha hafif blur */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Daha ince çizgi */
+  }
+
+  .header .logo {
+    font-size: 1.5rem; /* Daha küçük logo */
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+/* Şık kutuları için mobilde daha yuvarlak ve dengeli görünüm */
+.option {
+  padding: 1rem;
+  border-radius: 12px; /* Daha yuvarlak kenar */
+  flex-wrap: wrap;     /* Küçük ekranlarda içeriğin taşmasını önler */
+  justify-content: flex-start;
+}
+
+/* Seçenek işaretçisi (A, B, C, D) için tam yuvarlak stil */
+.option-marker {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.welcome h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+        align-items: center;
+        display: flex;
+        
+    }
+    * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+    .welcome p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+body {
+    background: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--light);
+    margin: 0; user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* === Header & Navigation === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 1rem 10%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.footer-nav a:hover {
+    color: var(--secondary);
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--light);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 999;
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav a:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-5px);
+}
+
+/* === Main Content === */
+.main-content {
+    margin-top: 120px;
+    padding: 0 10%;
+}
+
+.lesson-title {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.lesson-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.lesson-subtitle {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.lesson-subtitle::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.section:hover .lesson-subtitle::before {
+    width: 100%;
+}
+
+.lesson-text {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.highlight {
+    color: var(--secondary);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--secondary);
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.code-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.info-box {
+    background: rgba(48, 105, 152, 0.1);
+    border-left: 3px solid var(--primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(48, 105, 152, 0));
+    z-index: -1;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-box h4 i {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* === Section Styling === */
+.section {
+    margin-bottom: 4rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    top:50px;
+}
+
+
+.nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+                        top: 15px;
+
+        }
+
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow);
+}
+
+.section:hover::before {
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(255, 212, 59, 0.1));
+}
+
+/* === Projects Section === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gradient);
+    transition: height 0.4s ease;
+    border-radius: 4px 0 0 4px;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+
+}
+
+.project-card:hover::before {
+    height: 100%;
+}
+
+.project-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover h4 {
+    transform: translateX(10px);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .difficulty {
+    transform: scale(1.05);
+}
+
+.beginner {
+    background: rgba(100, 163, 52, 0.2);
+    color: #64A334;
+    border: 1px solid #64A334;
+}
+
+.intermediate {
+    background: rgba(255, 212, 59, 0.2);
+    color: #FFD43B;
+    border: 1px solid #FFD43B;
+}
+
+.advanced {
+    background: rgba(255, 61, 61, 0.2);
+    color: #FF3D3D;
+    border: 1px solid #FF3D3D;
+}
+
+/* === Resources Section === */
+.resources-list {
+    margin-top: 1.5rem;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    border-radius: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.resource-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 212, 59, 0.1), transparent);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.resource-item:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 5px 15px rgba(48, 105, 152, 0.3);
+}
+
+.resource-item:hover::after {
+    width: 100%;
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.resource-info h4 {
+    margin-bottom: 0.3rem;
+    color: var(--light);
+    transition: color 0.3s ease;
+}
+
+.resource-item:hover .resource-info h4 {
+    color: var(--secondary);
+}
+
+.resource-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.resource-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.resource-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.resource-link:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.resource-link:hover::after {
+    width: 100%;
+}
+
+.resource-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.resource-link:hover i {
+    transform: translateX(3px);
+}
+
+/* === Quiz Section === */
+.quiz-container {
+    margin-top: 2rem;
+}
+
+.quiz-question {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quiz-question:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px rgba(216, 204, 30, 0.536), 0 0 2px 2px rgba(141, 204, 25, 0.633);
+
+}
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--light);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: var(--gradient);
+    border-radius: 3px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.option:hover::after {
+    left: 100%;
+}
+
+.option.correct {
+    background: rgba(100, 163, 52, 0.2);
+    border-color: var(--accent-second);
+    animation: pulse 1s ease;
+}
+
+.option.incorrect {
+    background: rgba(255, 61, 61, 0.2);
+    border-color: #FF3D3D;
+    animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.option-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.option:hover .option-marker {
+    border-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.option.correct .option-marker {
+    background: var(--accent-second);
+    border-color: var(--accent-second);
+    color: var(--dark);
+}
+
+.option.incorrect .option-marker {
+    background: #FF3D3D;
+    border-color: #FF3D3D;
+    color: var(--dark);
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: none;
+    border-radius: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: rgba(100, 163, 52, 0.1);
+    border-left: 3px solid var(--accent-second);
+    color: #9CDE50;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feedback.incorrect {
+    background: rgba(255, 61, 61, 0.1);
+    border-left: 3px solid #FF3D3D;
+    color: #FF7373;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Footer === */
+.footer {
+    background: var(--darker);
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.copyright:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* === Scroll to Top Button === */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 997;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* === Animations === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Media Queries === */
+@media (max-width: 992px) {
+    .header, .main-content, .footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2.4rem;
+    }
+    
+    .footer-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.2rem 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 1.7rem;
+    }
+    
+    .info-box, .code-block {
+        padding: 1.2rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 5% 1.5rem;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem 5%;
+    }
+    
+    .header .logo {
+        font-size: 1.6rem;
+    }
+    
+    .lesson-title {
+        font-size: 1.8rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resource-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .back-button {
+        font-size: 0.9rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .option {
+        padding: 0.8rem;
+    }
+}
+.pxx {
+    font-size: 1.2rem;
+    margin: 2rem auto;
+    color: #e6e6fa;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 800px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0 1.5rem;
+}
+    /* Mevcut CSS'e eklenecek kısımlar */
+/* Mevcut CSS'e eklenecek kısımlar */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+/* Geri Dön butonu için özel stil */
+.back-button:hover {
+    transform: translateY(-2px);
+    animation: boxx 0.3s ease forwards;
+}
+
+@keyframes boxx {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+    }
+}
+
+
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+    .nav-links .back-button {
+        margin-left: auto;
+    }
+}
+
+
+/* Küçük ekranlar için media query */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 1rem;
+        transition: right 0.5s ease;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    /* Back button mobil özelleştirme */
+   
+    /* Hamburger menü animasyonu */
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00c3ff;
+}
+
+/* Daha yumuşak geçişler için */
+.nav-links a {
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00c3ff;
+}
+
+/* Hamburger çubuklarını biraz daha belirgin yapmak için */
+.hamburger-menu .bar {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+</style>
+<!DOCTYPE html>
+<html lang="tr">
+<body>
+    <header class="header">
+        <div class="logo">Kodroyale</div>
+        
+        <!-- Hamburger menü butonu ekleniyor -->
+        <div class="hamburger-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <!-- v sınıfını nav-links olarak değiştiriyoruz -->
+        <div class="footer-nav nav-links">
+            <a href="#projects">Projeler</a>
+            <a href="#quiz">Quiz</a>
+            <a href="#resources">Kaynaklar</a>
+            <a href="#next-steps">Sonraki Adımlar</a>
+            <a href="{% url 'python' %}" class="ack-button">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="lesson-title">Python'da String İşlemleri</h1>
+        <h6 class="pxx">Bu dersimizde Python'da string (metin) işlemleri, metotları ve kullanım örneklerini öğreneceksiniz.</h6>
+        <!-- Introduction Section -->
+        <section class="section">
+            <h2 class="lesson-subtitle">String Nedir?</h2>
+            <p class="lesson-text">
+                String, <span class="highlight">Python'da metinsel verileri temsil eden veri tipidir</span>. 
+                Stringler, tek tırnak (' '), çift tırnak (" ") veya üç tırnak (''' ''' veya """ """) içinde tanımlanabilir.
+            </p>
+            
+            <p class="lesson-text">
+                Python'da stringler <span class="highlight">değiştirilemez (immutable)</span> veri tipleridir. 
+                Yani bir string oluşturulduktan sonra, içeriği değiştirilemez.
+            </p>
+            
+            <div class="code-block">
+# String tanımlama
+ad = 'Ahmet'
+soyad = "Yılmaz"
+adres = '''İstanbul
+Kadıköy
+Türkiye'''
+
+# Stringleri ekrana yazdırma
+print(ad)
+print(soyad)
+print(adres)</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-lightbulb"></i> Biliyor muydunuz?</h4>
+                <p>Python'da üç tırnak ile tanımlanan stringler, birden fazla satır içerebilir ve satır sonlarını korur.</p>
+            </div>
+            
+            <h2 class="lesson-subtitle">String İndeksleme ve Dilimleme</h2>
+            <p class="lesson-text">
+                Python'da stringler, karakter dizileri olarak ele alınır ve her karaktere indeks numarası ile erişilebilir:
+            </p>
+            
+            <div class="code-block">
+# String indeksleme
+metin = "Python"
+print(metin[0])  # 'P'
+print(metin[1])  # 'y'
+print(metin[-1])  # 'n' (sondan başlayarak)
+print(metin[-2])  # 'o'
+
+# String dilimleme (slicing)
+print(metin[0:2])   # 'Py' (0'dan 2'ye kadar, 2 dahil değil)
+print(metin[2:4])   # 'th'
+print(metin[:3])    # 'Pyt' (baştan 3'e kadar)
+print(metin[3:])    # 'hon' (3'ten sona kadar)
+print(metin[-3:])   # 'hon' (sondan 3 karakter)
+print(metin[::2])   # 'Pto' (2'şer adımla)</div>
+            
+            <h2 class="lesson-subtitle">String Birleştirme ve Çoğaltma</h2>
+            <p class="lesson-text">
+                Stringleri birleştirmek için <span class="highlight">+ operatörü</span>, çoğaltmak için <span class="highlight">* operatörü</span> kullanılır:
+            </p>
+            
+            <div class="code-block">
+# String birleştirme
+ad = "Ahmet"
+soyad = "Yılmaz"
+tam_ad = ad + " " + soyad
+print(tam_ad)  # 'Ahmet Yılmaz'
+
+# String çoğaltma
+tekrar = "Python " * 3
+print(tekrar)  # 'Python Python Python '</div>
+            
+            <h2 class="lesson-subtitle">String Formatlama</h2>
+            <p class="lesson-text">
+                Python'da string formatlama için üç farklı yöntem vardır:
+            </p>
+            
+            <h3 class="lesson-subtitle">1. % Operatörü ile Formatlama (Eski yöntem)</h3>
+            <div class="code-block">
+ad = "Ahmet"
+yas = 25
+meslek = "mühendis"
+
+# % operatörü ile formatlama
+metin = "Merhaba, benim adım %s, %d yaşındayım ve %s olarak çalışıyorum." % (ad, yas, meslek)
+print(metin)  # 'Merhaba, benim adım Ahmet, 25 yaşındayım ve mühendis olarak çalışıyorum.'</div>
+            
+            <h3 class="lesson-subtitle">2. format() Metodu ile Formatlama</h3>
+            <div class="code-block">
+ad = "Ahmet"
+yas = 25
+meslek = "mühendis"
+
+# format() metodu ile formatlama
+metin1 = "Merhaba, benim adım {}, {} yaşındayım ve {} olarak çalışıyorum.".format(ad, yas, meslek)
+print(metin1)
+
+# İndeks numarası ile formatlama
+metin2 = "Merhaba, benim adım {0}, {1} yaşındayım ve {2} olarak çalışıyorum.".format(ad, yas, meslek)
+print(metin2)
+
+# İsimlendirilmiş parametreler ile formatlama
+metin3 = "Merhaba, benim adım {a}, {y} yaşındayım ve {m} olarak çalışıyorum.".format(a=ad, y=yas, m=meslek)
+print(metin3)</div>
+            
+            <h3 class="lesson-subtitle">3. f-string (Python 3.6+)</h3>
+            <div class="code-block">
+ad = "Ahmet"
+yas = 25
+meslek = "mühendis"
+
+# f-string ile formatlama (en modern yöntem)
+metin = f"Merhaba, benim adım {ad}, {yas} yaşındayım ve {meslek} olarak çalışıyorum."
+print(metin)
+
+# f-string içinde işlemler yapabilirsiniz
+print(f"5 yıl sonra {yas + 5} yaşında olacağım.")
+print(f"Adımın uzunluğu: {len(ad)} karakter")</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-code"></i> Modern String Formatlama</h4>
+                <p>f-string, Python 3.6 ve üzeri sürümlerde kullanılabilen en modern ve okunması kolay string formatlama yöntemidir. Değişkenleri doğrudan süslü parantezler içinde kullanabilir ve karmaşık ifadeler yazabilirsiniz.</p>
+            </div>
+            
+            <h2 class="lesson-subtitle">Yaygın String Metotları</h2>
+            <p class="lesson-text">
+                Python'da stringleri işlemek için birçok yerleşik metot bulunur:
+            </p>
+            
+            <h3 class="lesson-subtitle">1. Büyük/Küçük Harf Dönüşümleri</h3>
+            <div class="code-block">
+metin = "Python Programlama"
+
+print(metin.upper())       # 'PYTHON PROGRAMLAMA'
+print(metin.lower())       # 'python programlama'
+print(metin.title())       # 'Python Programlama' (Her Kelimenin İlk Harfi Büyük)
+print(metin.capitalize())  # 'Python programlama' (Sadece İlk Harf Büyük)
+print(metin.swapcase())    # 'pYTHON pROGRAMLAMA' (Büyük/Küçük Harfleri Değiştirir)</div>
+            
+            <h3 class="lesson-subtitle">2. Arama ve Değiştirme</h3>
+            <div class="code-block">
+metin = "Python Programlama Dili"
+
+# Arama metotları
+print(metin.find("Pro"))        # 7 (ilk bulduğu indeksi döndürür)
+print(metin.find("Java"))       # -1 (bulamazsa -1 döndürür)
+print(metin.index("Pro"))       # 7 (find gibidir ama bulamazsa hata verir)
+print("Pro" in metin)           # True (metin içinde varsa True döndürür)
+
+# Değiştirme
+yeni_metin = metin.replace("Python", "Java")
+print(yeni_metin)               # 'Java Programlama Dili'</div>
+            
+            <h3 class="lesson-subtitle">3. Bölme ve Birleştirme</h3>
+            <div class="code-block">
+# Bölme (split)
+metin = "Python,Java,C++,JavaScript"
+diller = metin.split(",")
+print(diller)                   # ['Python', 'Java', 'C++', 'JavaScript']
+
+# Birleştirme (join)
+dil_listesi = ["Python", "Java", "C++", "JavaScript"]
+birlesik = ", ".join(dil_listesi)
+print(birlesik)                 # 'Python, Java, C++, JavaScript'</div>
+            
+            <h3 class="lesson-subtitle">4. Boşluk İşlemleri</h3>
+            <div class="code-block">
+metin = "   Python Programlama   "
+
+print(metin.strip())          # 'Python Programlama' (baştaki ve sondaki boşlukları kaldırır)
+print(metin.lstrip())         # 'Python Programlama   ' (baştaki boşlukları kaldırır)
+print(metin.rstrip())         # '   Python Programlama' (sondaki boşlukları kaldırır)</div>
+            
+            <h3 class="lesson-subtitle">5. Kontrol Metotları</h3>
+            <div class="code-block">
+print("abc123".isalnum())     # True (alfanümerik mi?)
+print("123".isdigit())        # True (rakam mı?)
+print("abc".isalpha())        # True (harf mi?)
+print("ABC".isupper())        # True (büyük harf mi?)
+print("abc".islower())        # True (küçük harf mi?)
+print("  ".isspace())         # True (boşluk mu?)
+print("Python".startswith("P"))  # True (P ile mi başlıyor?)
+print("Python".endswith("n"))    # True (n ile mi bitiyor?)</div>
+            
+            <h2 class="lesson-subtitle">String Escape Karakterleri</h2>
+            <p class="lesson-text">
+                Python'da özel karakterleri string içinde kullanmak için escape karakterleri kullanılır:
+            </p>
+            
+            <div class="code-block">
+print("Python'da string kullanımı")     # Python'da string kullanımı
+print('Python\'da string kullanımı')    # Python'da string kullanımı
+print("Satır 1\nSatır 2")               # Satır 1
+                                         # Satır 2
+print("Tab\tkarakter")                  # Tab	karakter
+print("C:\\Program Files\\Python")      # C:\Program Files\Python
+print(r"C:\Program Files\Python")       # C:\Program Files\Python (raw string)</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-lightbulb"></i> İpucu</h4>
+                <p>Python'da <code>r"..."</code> şeklinde tanımlanan "raw string" (ham string) ifadelerinde escape karakterleri işlenmez. Bu özellikle dosya yollarını veya regex ifadelerini tanımlarken kullanışlıdır.</p>
+            </div>
+        </section>
+        
+        <!-- Projects Section -->
+        <section class="section" id="projects">
+            <h2 class="lesson-subtitle">Yapılabilecek Projeler</h2>
+            <p class="lesson-text">
+                Python'da string işlemleri konusunda pratik yapmak için aşağıdaki projeleri deneyebilirsiniz:
+            </p>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h4><i class="fas fa-file-alt"></i> Metin Analiz Aracı</h4>
+                    <p>Bir metindeki kelime sayısını, harf sayısını, en çok tekrar eden kelimeleri bulan bir program yazın.</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-exchange-alt"></i> Şifreleme Aracı</h4>
+                    <p>Basit bir şifreleme algoritması kullanarak metinleri şifreleyen ve çözen bir program yazın (örn. Sezar şifrelemesi).</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-spell-check"></i> Palindrom Kontrolü</h4>
+                    <p>Bir metnin palindrom olup olmadığını kontrol eden (tersten okunduğunda aynı olan, örn. "kayak") bir program yazın.</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-language"></i> Metin Formatlayıcı</h4>
+                    <p>Bir metni istenen formata dönüştüren (büyük/küçük harf, başlık formatı, belirli karakterleri değiştirme) bir araç geliştirin.</p>
+                    <span class="difficulty intermediate">Orta</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quiz Section -->
+        <section class="section" id="quiz">
+            <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+            <p class="lesson-text">
+                Python'da string işlemleri konusunu ne kadar anladığınızı test etmek için aşağıdaki soruları cevaplayın:
+            </p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <p class="question-text">1. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                    <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">metin = "Python"
+print(metin[1:4])</pre>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Pyth</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ytho</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">yth</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">ython</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! [1:4] dilimleme işlemi, 1. indeksten (y) başlayarak 4. indekse kadar (4 hariç) olan karakterleri verir, yani "yth".
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. [1:4] dilimleme işlemi, 1. indeksten (y) başlayarak 4. indekse kadar (4 hariç) olan karakterleri verir, yani "yth".
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="question-text">2. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                    <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">metin = "Python Programlama"
+print(metin.replace("P", "J"))</pre>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Jython Jrogramlama</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">Jython Jrogramlama</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">Jython Programlama</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">Python Jrogramlama</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! replace("P", "J") metodu, metindeki tüm "P" karakterlerini "J" ile değiştirir.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. replace("P", "J") metodu, metindeki tüm "P" karakterlerini "J" ile değiştirir.
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="question-text">3. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                    <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">metin = "Python,Java,C++"
+diller = metin.split(",")
+print(diller[1])</pre>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Python</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">Java</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">C++</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">Python,Java,C++</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! split(",") metodu metni virgülle ayırarak bir liste oluşturur ve bu listenin 1. indeksindeki eleman "Java"dır.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. split(",") metodu metni virgülle ayırarak bir liste oluşturur ve bu listenin 1. indeksindeki eleman "Java"dır.
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">4. f-string formatlama ile ilgili aşağıdakilerden hangisi doğrudur?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Python'un tüm sürümlerinde kullanılabilir</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">String içinde süslü parantezler içerisinde ifadeler kullanılabilir</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">format() metodundan daha yavaştır</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Sadece basit değişken yerleştirme için kullanılabilir</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! f-string formatlamada süslü parantezler içerisinde değişkenler, fonksiyonlar ve hesaplamalar kullanılabilir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. f-string formatlamada süslü parantezler içerisinde değişkenler, fonksiyonlar ve hesaplamalar kullanılabilir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">5. Aşağıdaki metodlardan hangisi bir stringi küçük harfe dönüştürür?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">uppercase()</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">lower()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">capitalize()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">swapcase()</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! lower() metodu stringdeki tüm karakterleri küçük harfe dönüştürür.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. lower() metodu stringdeki tüm karakterleri küçük harfe dönüştürür.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">6. Aşağıdaki kodun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">metin = "Python"
+print(metin[-2:])</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Py</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">th</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">on</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">n</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! [-2:] ifadesi, sondan ikinci karakterden başlayarak sonuna kadar olan kısmı verir, yani "on".
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. [-2:] ifadesi, sondan ikinci karakterden başlayarak sonuna kadar olan kısmı verir, yani "on".
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">7. Aşağıdaki ifadelerden hangisi Python'da string tipinin bir özelliğidir?</p>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">İmmutable (değiştirilemez) bir veri tipidir</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Sadece aynı tip karakterleri içerebilir</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Karakterleri değiştirilebilir (mutable)</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">İndeksleme 1'den başlar</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da stringler immutable (değiştirilemez) veri tipidir. Bir string oluşturulduktan sonra, içeriği değiştirilemez.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da stringler immutable (değiştirilemez) veri tipidir. Bir string oluşturulduktan sonra, içeriği değiştirilemez.
+                </div>
+            </div>
+            <!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python String İşlemleri | Kodroyale</title>
+    <!-- Aynı stil ve script içeriği korundu -->
+</head>
+<body>
+    <main class="main-content">
+        <section class="section" id="introduction">
+            <h1 class="lesson-title">Python String İşlemleri</h1>
+            <p class="lesson-text">
+                Python'da string (metin) işlemleri, metin verilerini manipüle etmek, analiz etmek ve dönüştürmek için kullanılan temel bir konudur. Bu derste, Python'da string veri tipi ve bu veri tipi üzerinde gerçekleştirebileceğiniz çeşitli işlemleri öğreneceksiniz.
+            </p>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-info-circle"></i> Bu Derste Öğrenecekleriniz</h4>
+                <ul>
+                    <li>String oluşturma ve tanımlama</li>
+                    <li>String indeksleme ve dilimleme</li>
+                    <li>String metotları ve özellikleri</li>
+                    <li>String formatlama teknikleri</li>
+                    <li>String manipülasyon işlemleri</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Basic Concepts Section -->
+        <section class="section" id="basic-concepts">
+            <h2 class="lesson-subtitle">String Oluşturma ve Tanımlama</h2>
+            <p class="lesson-text">
+                Python'da string'ler tek tırnak, çift tırnak veya üç tırnak içinde tanımlanabilir:
+            </p>
+            
+            <div class="code-block">
+                <pre>
+# Tek tırnak kullanımı
+tek_tirnak = 'Merhaba Python'
+
+# Çift tırnak kullanımı
+cift_tirnak = "Merhaba Python"
+
+# Üç tırnak (çoklu satır) kullanımı
+coklu_satir = """Bu bir
+çok satırlı
+string örneğidir."""
+
+print(tek_tirnak)
+print(cift_tirnak)
+print(coklu_satir)
+                </pre>
+            </div>
+            
+            <p class="lesson-text">
+                String'ler değiştirilemez (immutable) veri tipleridir. Bir kez oluşturulduktan sonra içeriği değiştirilemez, ancak yeni string'ler oluşturulabilir.
+            </p>
+        </section>
+        
+        <!-- Content Sections -->
+        <section class="section" id="indexing-slicing">
+            <h2 class="lesson-subtitle">String İndeksleme ve Dilimleme</h2>
+            <p class="lesson-text">
+                Python'da string'lerin her karakterine indeks numarası ile erişebilirsiniz. İndeksleme 0'dan başlar.
+            </p>
+            
+            <div class="code-block">
+                <pre>
+                metin = "Python Programlama"
+
+# İndeksleme
+print(metin[0])    # P
+print(metin[7])    # P
+print(metin[-1])   # a (sondan 1. karakter)
+
+# Dilimleme (slicing)
+print(metin[0:6])   # Python
+print(metin[7:])    # Programlama
+print(metin[:6])    # Python
+print(metin[-11:])  # Programlama
+print(metin[::2])   # Pto rgalm (2 adım atlayarak)
+                </pre>
+            </div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-lightbulb"></i> İpucu</h4>
+                <p>String dilimlerken, <code>metin[başlangıç:bitiş:adım]</code> formatını kullanırsınız. Başlangıç dahil, bitiş hariçtir.</p>
+            </div>
+        </section>
+        
+        <section class="section" id="string-methods">
+            <h2 class="lesson-subtitle">String Metotları</h2>
+            <p class="lesson-text">
+                Python'da string'ler üzerinde işlem yapmak için birçok kullanışlı metot bulunmaktadır:
+            </p>
+            
+            <div class="code-block">
+                <pre>
+metin = "   Python Programlama   "
+
+# Temel metotlar
+print(metin.upper())          # PYTHON PROGRAMLAMA
+print(metin.lower())          # python programlama
+print(metin.strip())          # "Python Programlama" (baştaki ve sondaki boşlukları siler)
+print(metin.replace("P", "J")) # "   Jython Jrogramlama   "
+
+# Arama metotları
+print(metin.find("Pro"))      # 10 (ilk bulduğu konumu döndürür)
+print(metin.count("a"))       # 3 (kaç tane 'a' olduğunu sayar)
+print("Pro" in metin)         # True (içeriyor mu kontrolü)
+
+# Bölme ve birleştirme
+kelimeler = metin.strip().split(" ")  # ["Python", "Programlama"]
+print("-".join(kelimeler))    # "Python-Programlama"
+                </pre>
+            </div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-exclamation-circle"></i> Dikkat</h4>
+                <p>String metotları orijinal string'i değiştirmez, yeni bir string oluşturur. Çünkü string'ler değiştirilemez (immutable) veri tipleridir.</p>
+            </div>
+        </section>
+        
+        <section class="section" id="string-formatting">
+            <h2 class="lesson-subtitle">String Formatlama</h2>
+            <p class="lesson-text">
+                Python'da string formatlama için üç farklı yöntem bulunmaktadır:
+            </p>
+            
+            <div class="code-block">
+                <pre>
+isim = "Ahmet"
+yas = 25
+boy = 1.78
+
+# 1. format() metodu
+print("Merhaba, benim adım {}, {} yaşındayım ve boyum {} metredir.".format(isim, yas, boy))
+
+# 2. f-string (Python 3.6+)
+print(f"Merhaba, benim adım {isim}, {yas} yaşındayım ve boyum {boy} metredir.")
+
+# 3. % operatörü (eski yöntem)
+print("Merhaba, benim adım %s, %d yaşındayım ve boyum %.2f metredir." % (isim, yas, boy))
+
+# Sayısal formatlama
+pi = 3.14159
+print(f"Pi sayısı: {pi:.2f}")  # Pi sayısı: 3.14
+print(f"Pi sayısı: {pi:10.2f}")  # Pi sayısı:       3.14 (10 karakter genişliğinde)
+                </pre>
+            </div>
+            
+            <p class="lesson-text">
+                F-string'ler (Python 3.6+) en modern ve okunabilir formatlama yöntemidir. String içerisinde doğrudan değişken ve ifadeler kullanabilirsiniz.
+            </p>
+        </section>
+
+        <section class="section" id="string-operations">
+            <h2 class="lesson-subtitle">String İşlemleri</h2>
+            <p class="lesson-text">
+                String'ler üzerinde çeşitli işlemler gerçekleştirebilirsiniz:
+            </p>
+            
+            <div class="code-block">
+                <pre>
+# Birleştirme (concatenation)
+ad = "Python"
+soyad = "Programlama"
+tam_ad = ad + " " + soyad  # "Python Programlama"
+
+# Tekrarlama
+tekrar = "Python" * 3  # "PythonPythonPython"
+
+# Karşılaştırma
+print("abc" < "def")  # True (alfabetik sıralama)
+print("Python" == "python")  # False (büyük/küçük harf duyarlı)
+print("Python".lower() == "python")  # True
+
+# Uzunluk
+print(len("Python"))  # 6
+
+# Karakter değişimi (doğrudan değil, yeni string oluşturarak)
+s = "Python"
+s_yeni = s[:2] + "x" + s[3:]  # "Pyxhon"
+                </pre>
+            </div>
+        </section>
+            
+        <!-- Quiz Section -->
+        <section class="section" id="quiz">
+            <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+            <p class="lesson-text">
+                Aşağıdaki soruları yanıtlayarak Python string işlemleri hakkındaki bilgilerinizi test edin.
+            </p>
+            
+            <div class="quiz-question">
+                <p class="question-text">8. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">metin = "Python"
+print(metin[1:4])</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Pyt</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Pyth</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">yth</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">ytho</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! metin[1:4] ifadesi, 1. indeksten (y) başlayıp 4. indekse kadar (4 hariç) olan karakterleri alır. Bu da "yth" olur.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. metin[1:4] ifadesi, 1. indeksten (y) başlayıp 4. indekse kadar (4 hariç) olan karakterleri alır. Bu da "yth" olur.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">9. Aşağıdaki Python string metotlarından hangisi orijinal string'i değiştirir?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">upper()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">strip()</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">replace()</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Hiçbiri, string'ler değiştirilemez (immutable)</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da string'ler değiştirilemez (immutable) veri tipleridir. Bu metotlar orijinal string'i değiştirmez, yeni bir string döndürür.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da string'ler değiştirilemez (immutable) veri tipleridir. Bu metotlar orijinal string'i değiştirmez, yeni bir string döndürür.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">10. Aşağıdaki string formatlama yöntemlerinden hangisi Python 3.6 ve sonrası için önerilen modern yöntemdir?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">% operatörü</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">str.format() metodu</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">f-string</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">string birleştirme (+)</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! f-string'ler (formatted string literals) Python 3.6'dan itibaren kullanılabilen en modern ve okunabilir formatlama yöntemidir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. f-string'ler (formatted string literals) Python 3.6'dan itibaren kullanılabilen en modern ve okunabilir formatlama yöntemidir.
+                </div>
+            </div>
+        </section>
+        <section class="section" id="resources">
+            <h2 class="lesson-subtitle">Önerilen Kaynaklar</h2>
+            <p class="lesson-text">
+                Python string işlemleri için faydalanabileceğiniz bazı önerilen kaynaklar:
+            </p>
+            
+            <div class="resources-list">
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Kavax - Python String Kullanımı Python String Fonksiyonları ve String İşlemleri</h4>
+                        <p>Python'da string İşlemleri hakkında iyi ve detaylı anlatım.</p>
+                        <a href="https://youtu.be/sRnrKdehLd4?si=Vlw03XK0AJ_8kqtR" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>algoritmauzmani - Python String İşlemleri</h4>
+                        <p>String İşlemleri detaylı kullanımı ve örnekleri.</p>
+                        <a href="https://youtu.be/OMX2p6mKyzI?si=AVzZ0JAysK6-wgeg" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Yazılım Bilimi - Python3 Dersleri 5 String İşlemleri</h4>
+                        <p>String işlemleri için kesinlikle tavsiye edilir.</p>
+                        <a href="https://youtu.be/c8vdnPSqVEw?si=31L0iGz5WNn4T0oi" class="resource-link" target="_blank">Hemen izle<i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </section>
+        
+        <!-- Next Steps Section -->
+        <section class="section" id="next-steps">
+            <h2 class="lesson-subtitle">Sonraki Adımlar</h2>
+            <p class="lesson-text">
+                Python string işlemleri konusunu tamamladıktan sonra öğrenmenize devam edebileceğiniz konular:
+            </p>
+            
+            <ul class="lesson-text">
+                <li><span class="highlight">Düzenli İfadeler (Regular Expressions):</span> String'lerde karmaşık arama ve eşleştirme işlemleri için regex kullanımını öğrenin.</li>
+                <li><span class="highlight">String Formatlama:</span> f-string, format() ve diğer ileri string formatlama tekniklerini öğrenin.</li>
+                <li><span class="highlight">Encode/Decode:</span> Unicode karakter işleme ve farklı karakter kodlamaları arasında dönüşüm yapma.</li>
+                <li><span class="highlight">Text Processing:</span> Büyük metin dosyalarını işleme ve analiz etme teknikleri.</li>
+                <li><span class="highlight">NLP Temelleri:</span> Doğal dil işleme için temel string işleme teknikleri.</li>
+            </ul>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-trophy"></i> Başarı İpucu</h4>
+                <p>Python'da string'ler değiştirilemez (immutable) yapılardır. String'leri manipüle eden metotlar her zaman yeni bir string döndürür, orijinal string'i değiştirmez. Bu özelliği göz önünde bulundurarak string işlemlerinizi planlamak, performans açısından önemlidir.</p>
+            </div>
+        </section>
+        <footer class="footer">
+ 
+            <p class="copyright">&copy; 2025 Kodroyale | Tüm Hakları Saklıdır</p>
+        </footer>
+        <script>
+            // Quiz işlevselliği için JavaScript
+            document.addEventListener('DOMContentLoaded', function() {
+                const options = document.querySelectorAll('.option');
+                
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        // Bu sorunun tüm seçeneklerini seçin
+                        const parentQuestion = this.closest('.quiz-question');
+                        const allOptions = parentQuestion.querySelectorAll('.option');
+                        const correctFeedback = parentQuestion.querySelector('.feedback.correct');
+                        const incorrectFeedback = parentQuestion.querySelector('.feedback.incorrect');
+                        
+                        // Önce diğer seçeneklerden sınıfları kaldır
+                        allOptions.forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                        });
+                        
+                        // Tüm geri bildirimleri gizle
+                        correctFeedback.style.display = 'none';
+                        incorrectFeedback.style.display = 'none';
+                        
+                        // Doğru cevap kontrolü ve sınıf ekleme
+                        const isCorrect = this.getAttribute('data-correct') === 'true';
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            correctFeedback.style.display = 'block';
+                        } else {
+                            this.classList.add('incorrect');
+                            incorrectFeedback.style.display = 'block';
+                            
+                            // Doğru cevabı yeşil yap
+                            allOptions.forEach(opt => {
+                                if (opt.getAttribute('data-correct') === 'true') {
+                                    opt.classList.add('correct');
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+    
+    // Hamburger menü işlevselliği
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.querySelector('.hamburger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const body = document.body;
+    
+        // Hamburger menü tıklama işlevi
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            body.classList.toggle('menu-open'); // Menü açıkken body'nin scroll'unu engellemek için
+        });
+    
+        // Menü bağlantılarına tıklandığında menüyü kapat
+        const navItems = document.querySelectorAll('.nav-links a');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+    
+        // Sayfa dışına tıklandığında menüyü kapat
+        document.addEventListener('click', function(event) {
+            const isClickInside = navLinks.contains(event.target) || hamburger.contains(event.target);
+            
+            if (!isClickInside && navLinks.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+    
+        // Scroll engelleme için CSS ekleyelim
+        const style = document.createElement('style');
+        style.textContent = `
+            body.menu-open {
+                overflow: hidden;
+            }
+            
+            @media (max-width: 768px) {
+                .nav-links {
+                    overflow-y: auto;
+                }
+                
+                .nav-links a {
+                    display: block;
+                    padding: 15px;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 18px;
+                    border-bottom: 1px solid rgba(255,255,255,0.1);
+                }
+                
+                .nav-links a:last-child {
+                    border-bottom: none;
+                }
+                
+                .nav-links .back-button {
+                    margin-top: 30px;
+                    width: auto;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+    
+        </script>
+       
+    </body>
+    </html>

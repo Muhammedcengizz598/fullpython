@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python'da Yorum satırları - Kodroyale</title>
+    <meta name="description" content="Kodroyale ile sıfırdan Python'da Yorum satırları eğitimi: örneklerle sade anlatım, modern tasarım ve eksiksiz içerikle yazılım öğrenin.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #306998;          /* Python mavi */
+    --primary-dark: #1D415E;     /* Koyu Python mavi */
+    --secondary: #FFD43B;        /* Python sarı */
+    --accent: #4B8BBE;           /* Python açık mavi */
+    --accent-second: #64A334;    /* Python yılan yeşili */
+    --dark: #000000;             /* Koyu arka plan */
+    --darker: #000000;           /* Daha koyu arka plan */
+    --light: #F5F5F5;            /* Açık metin */
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+    --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+    --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 4%;
+    backdrop-filter: blur(6px); /* Daha hafif blur */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Daha ince çizgi */
+  }
+
+  .header .logo {
+    font-size: 1.5rem; /* Daha küçük logo */
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+/* Şık kutuları için mobilde daha yuvarlak ve dengeli görünüm */
+.option {
+  padding: 1rem;
+  border-radius: 12px; /* Daha yuvarlak kenar */
+  flex-wrap: wrap;     /* Küçük ekranlarda içeriğin taşmasını önler */
+  justify-content: flex-start;
+}
+
+/* Seçenek işaretçisi (A, B, C, D) için tam yuvarlak stil */
+.option-marker {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.welcome h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+        align-items: center;
+        display: flex;
+        
+    }
+    * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+    .welcome p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+body {
+    background: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--light);
+    margin: 0;
+    user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+    overflow-x: hidden;
+    position: relative;
+}
+* {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+/* === Header & Navigation === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 1rem 10%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.footer-nav a:hover {
+    color: var(--secondary);
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--light);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 999;
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav a:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-5px);
+}
+
+/* === Main Content === */
+.main-content {
+    margin-top: 120px;
+    padding: 0 10%;
+}
+
+.lesson-title {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.lesson-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.lesson-subtitle {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.lesson-subtitle::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.section:hover .lesson-subtitle::before {
+    width: 100%;
+}
+
+.lesson-text {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.highlight {
+    color: var(--secondary);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--secondary);
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.code-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.info-box {
+    background: rgba(48, 105, 152, 0.1);
+    border-left: 3px solid var(--primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(48, 105, 152, 0));
+    z-index: -1;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-box h4 i {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* === Section Styling === */
+.section {
+    margin-bottom: 4rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    top:50px;
+}
+
+
+.nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+                        top: 15px;
+
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow);
+}
+
+.section:hover::before {
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(255, 212, 59, 0.1));
+}
+
+/* === Projects Section === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gradient);
+    transition: height 0.4s ease;
+    border-radius: 4px 0 0 4px;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+
+}
+
+.project-card:hover::before {
+    height: 100%;
+}
+
+.project-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover h4 {
+    transform: translateX(10px);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .difficulty {
+    transform: scale(1.05);
+}
+
+.beginner {
+    background: rgba(100, 163, 52, 0.2);
+    color: #64A334;
+    border: 1px solid #64A334;
+}
+
+.intermediate {
+    background: rgba(255, 212, 59, 0.2);
+    color: #FFD43B;
+    border: 1px solid #FFD43B;
+}
+
+.advanced {
+    background: rgba(255, 61, 61, 0.2);
+    color: #FF3D3D;
+    border: 1px solid #FF3D3D;
+}
+
+/* === Resources Section === */
+.resources-list {
+    margin-top: 1.5rem;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    border-radius: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.resource-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 212, 59, 0.1), transparent);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.resource-item:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 5px 15px rgba(48, 105, 152, 0.3);
+}
+
+.resource-item:hover::after {
+    width: 100%;
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.resource-info h4 {
+    margin-bottom: 0.3rem;
+    color: var(--light);
+    transition: color 0.3s ease;
+}
+
+.resource-item:hover .resource-info h4 {
+    color: var(--secondary);
+}
+
+.resource-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.resource-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.resource-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.resource-link:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.resource-link:hover::after {
+    width: 100%;
+}
+
+.resource-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.resource-link:hover i {
+    transform: translateX(3px);
+}
+
+/* === Quiz Section === */
+.quiz-container {
+    margin-top: 2rem;
+}
+
+.quiz-question {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quiz-question:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px rgba(216, 204, 30, 0.536), 0 0 2px 2px rgba(141, 204, 25, 0.633);
+
+}
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--light);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: var(--gradient);
+    border-radius: 3px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.option:hover::after {
+    left: 100%;
+}
+
+.option.correct {
+    background: rgba(100, 163, 52, 0.2);
+    border-color: var(--accent-second);
+    animation: pulse 1s ease;
+}
+
+.option.incorrect {
+    background: rgba(255, 61, 61, 0.2);
+    border-color: #FF3D3D;
+    animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.option-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.option:hover .option-marker {
+    border-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.option.correct .option-marker {
+    background: var(--accent-second);
+    border-color: var(--accent-second);
+    color: var(--dark);
+}
+
+.option.incorrect .option-marker {
+    background: #FF3D3D;
+    border-color: #FF3D3D;
+    color: var(--dark);
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: none;
+    border-radius: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: rgba(100, 163, 52, 0.1);
+    border-left: 3px solid var(--accent-second);
+    color: #9CDE50;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feedback.incorrect {
+    background: rgba(255, 61, 61, 0.1);
+    border-left: 3px solid #FF3D3D;
+    color: #FF7373;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Footer === */
+.footer {
+    background: var(--darker);
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.copyright:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* === Scroll to Top Button === */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 997;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* === Animations === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Media Queries === */
+@media (max-width: 992px) {
+    .header, .main-content, .footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2.4rem;
+    }
+    
+    .footer-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.2rem 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 1.7rem;
+    }
+    
+    .info-box, .code-block {
+        padding: 1.2rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 5% 1.5rem;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem 5%;
+    }
+    
+    .header .logo {
+        font-size: 1.6rem;
+    }
+    
+    .lesson-title {
+        font-size: 1.8rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resource-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .back-button {
+        font-size: 0.9rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .option {
+        padding: 0.8rem;
+    }
+}
+.pxx {
+    font-size: 1.2rem;
+    margin: 2rem auto;
+    color: #e6e6fa;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 800px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0 1.5rem;
+}
+    /* Mevcut CSS'e eklenecek kısımlar */
+/* Mevcut CSS'e eklenecek kısımlar */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+/* Geri Dön butonu için özel stil */
+.back-button:hover {
+    transform: translateY(-2px);
+    animation: boxx 0.3s ease forwards;
+}
+
+@keyframes boxx {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+    }
+}
+
+
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+    .nav-links .back-button {
+        margin-left: auto;
+    }
+}
+
+
+/* Küçük ekranlar için media query */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 1rem;
+        transition: right 0.5s ease;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    /* Back button mobil özelleştirme */
+   
+    /* Hamburger menü animasyonu */
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00c3ff;
+}
+
+/* Daha yumuşak geçişler için */
+.nav-links a {
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00c3ff;
+}
+
+/* Hamburger çubuklarını biraz daha belirgin yapmak için */
+.hamburger-menu .bar {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+</style>
+```html
+<header class="header">
+        <div class="logo">Kodroyale</div>
+        
+        <!-- Hamburger menü butonu ekleniyor -->
+        <div class="hamburger-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <!-- v sınıfını nav-links olarak değiştiriyoruz -->
+        <div class="footer-nav nav-links">
+            <a href="#projects">Projeler</a>
+            <a href="#quiz">Quiz</a>
+            <a href="#resources">Kaynaklar</a>
+            <a href="#next-steps">Sonraki Adımlar</a>
+            <a href="{% url 'python' %}" class="ack-button">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="lesson-title">Python'da Yorum Satırları</h1>
+        <h6 class="pxx">Bu dersimizde Python'da yorum satırları nedir, nasıl yazılır ve etkili kullanım teknikleri üzerinde duracağız.</h6>
+        <!-- Introduction Section -->
+        <section class="section">
+            <h2 class="lesson-subtitle">Yorum Satırları Nedir?</h2>
+            <p class="lesson-text">
+                Yorum satırları, <span class="highlight">kodun çalışmasını etkilemeden açıklama eklemek için kullanılan metin satırlarıdır</span>. 
+                Python yorumlayıcısı bu satırları görmezden gelir ve programın çalışmasına dahil etmez.
+            </p>
+            
+            <p class="lesson-text">
+                Yorum satırları <span class="highlight">kodunuzu daha anlaşılır kılar, karmaşık işlemleri açıklar ve kodun amacını belirtir</span>. 
+                Ayrıca daha sonra kodunuzu inceleyecek diğer geliştiricilere veya kendinize rehberlik eder.
+            </p>
+            
+            <div class="code-block">
+# Bu bir yorum satırıdır
+print("Merhaba Python!")  # Bu da satır sonunda bir yorumdur
+
+# Program kullanıcıdan isim alıyor
+isim = input("Adınız nedir? ")  
+
+# Kullanıcıyı selamlıyoruz
+print("Merhaba", isim)
+</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-lightbulb"></i> Biliyor muydunuz?</h4>
+                <p>Python'da yorum satırlarının kendisi de bir dokümantasyon biçimi olabilir. Özellikle üç tırnak işareti (""") ile yazılan docstring'ler, fonksiyonlar ve sınıflar için otomatik dokümantasyon oluşturmaya yardımcı olur.</p>
+            </div>
+            
+            <h2 class="lesson-subtitle">Python'da Yorum Türleri</h2>
+            <p class="lesson-text">
+                Python'da temel olarak iki tür yorum yazma biçimi vardır:
+            </p>
+            <ul class="lesson-text">
+                <li><span class="highlight">Tek Satırlık Yorumlar:</span> Diyez (#) işareti ile başlar</li>
+                <li><span class="highlight">Çok Satırlı Yorumlar:</span> Üç tırnak işareti (''' veya """) ile çevrelenir</li>
+            </ul>
+            
+            <div class="code-block">
+# Bu bir tek satırlık yorumdur
+
+# Birden fazla tek satırlık yorum
+# da alt alta yazılabilir
+# İşte bu şekilde
+
+"""
+Bu bir çok satırlı yorum örneğidir.
+Birden fazla satır yazabilirsiniz.
+Python bu metni çalıştırmaz.
+"""
+
+'''
+Tek tırnak işareti ile de
+çok satırlı yorum yazabilirsiniz.
+'''</div>
+            
+            <h2 class="lesson-subtitle">Tek Satırlık Yorumlar</h2>
+            <p class="lesson-text">
+                Tek satırlık yorumlar, diyez (#) işareti ile başlar ve satır sonuna kadar devam eder. İşlevi:
+            </p>
+            
+            <ul class="lesson-text">
+                <li>Kod satırını açıklamak</li>
+                <li>Geçici olarak kod satırını devre dışı bırakmak</li>
+                <li>Kısa notlar eklemek</li>
+            </ul>
+            
+            <div class="code-block">
+x = 10  # x değişkenine 10 değeri atanıyor
+y = 20  # y değişkenine 20 değeri atanıyor
+
+# Toplama işlemi yapılıyor
+toplam = x + y
+
+# print(x - y)  # Bu satır çalışmayacak çünkü yorum satırı haline getirildi
+
+print("Toplam:", toplam)  # Ekrana toplam değerini yazdırıyoruz</div>
+            
+            <h3 class="lesson-subtitle">Satır Sonu Yorumları</h3>
+            <p class="lesson-text">
+                Kod satırının sonuna eklenen yorumlardır. Genellikle satırın ne yaptığını açıklamak için kullanılır:
+            </p>
+            
+            <div class="code-block">
+pi = 3.14159  # Pi sabiti
+yaricap = 5  # Dairenin yarıçapı (cm cinsinden)
+alan = pi * (yaricap ** 2)  # Alan hesaplama formülü: π × r²
+print(f"Dairenin alanı: {alan} cm²")  # Sonucu ekrana yazdır</div>
+            
+            <h2 class="lesson-subtitle">Çok Satırlı Yorumlar</h2>
+            <p class="lesson-text">
+                Çok satırlı yorumlar (docstring olarak da bilinir), üç adet tırnak işareti ile başlayıp biten yorumlardır. Bunlar:
+            </p>
+            
+            <ul class="lesson-text">
+                <li>Fonksiyonların, sınıfların ve modüllerin dokümantasyonu için kullanılır</li>
+                <li>Uzun açıklamalar yazmak için idealdir</li>
+                <li>Kodun belgelenmesine yardımcı olur</li>
+            </ul>
+            
+            <div class="code-block">
+def kare_al(sayi):
+    """
+    Verilen sayının karesini hesaplayan fonksiyon.
+    
+    Parametreler:
+        sayi (int/float): Karesi alınacak sayı
+        
+    Dönüş Değeri:
+        int/float: Sayının karesi
+    """
+    return sayi ** 2
+
+print(kare_al(5))  # Çıktı: 25
+
+# Docstring'e erişmek
+print(kare_al.__doc__)</div>
+            
+            <h3 class="lesson-subtitle">Docstring Kuralları</h3>
+            <p class="lesson-text">
+                Python'da docstring'ler için genel olarak kabul görmüş bazı kurallar vardır:
+            </p>
+            
+            <div class="code-block">
+def toplama(a, b):
+    """Verilen iki sayıyı toplar.
+    
+    Args:
+        a (int): İlk sayı
+        b (int): İkinci sayı
+    
+    Returns:
+        int: İki sayının toplamı
+    
+    Examples:
+        >>> toplama(3, 5)
+        8
+        >>> toplama(-1, 1)
+        0
+    """
+    return a + b
+
+
+class Kullanici:
+    """
+    Kullanıcı bilgilerini tutan sınıf.
+    
+    Attributes:
+        ad (str): Kullanıcının adı
+        soyad (str): Kullanıcının soyadı
+        yas (int): Kullanıcının yaşı
+    """
+    
+    def __init__(self, ad, soyad, yas):
+        """
+        Kullanıcı sınıfını başlatır.
+        
+        Args:
+            ad (str): Kullanıcının adı
+            soyad (str): Kullanıcının soyadı
+            yas (int): Kullanıcının yaşı
+        """
+        self.ad = ad
+        self.soyad = soyad
+        self.yas = yas</div>
+            
+            <h2 class="lesson-subtitle">Yorum Satırlarının Etkili Kullanımı</h2>
+            <p class="lesson-text">
+                İyi yazılmış yorumlar, kodunuzu daha anlaşılır ve bakımı daha kolay hale getirir. İşte bazı iyi uygulamalar:
+            </p>
+            
+            <ul class="lesson-text">
+                <li><span class="highlight">Ne yaptığı açık olan kodu açıklamayın</span> - Kodun kendisi ne yaptığını açıkça gösteriyorsa, gereksiz yorumlardan kaçının.</li>
+                <li><span class="highlight">Neden yapıldığını açıklayın</span> - Özellikle karmaşık algoritmaların veya beklenmedik yaklaşımların nedenini açıklayın.</li>
+                <li><span class="highlight">Güncel tutun</span> - Kod değiştiğinde yorumları da güncelleyin, yoksa yanlış yönlendirme yapabilirler.</li>
+                <li><span class="highlight">Kodu belgelendirin</span> - Tüm fonksiyonlar ve sınıflar için düzgün docstring'ler yazın.</li>
+            </ul>
+            
+            <div class="code-block">
+# Kötü yorum örneği
+x = x + 1  # x'i bir artır (gereksiz, zaten açık)
+
+# İyi yorum örneği
+multiplier = 1.08  # Vergi oranı (%8)
+
+# Karmaşık algoritma açıklaması
+def find_closest_point(points, target):
+    """
+    Bir hedef noktaya en yakın noktayı bulur.
+    
+    Bu fonksiyon, girdi olarak verilen noktalar listesindeki her bir nokta
+    için Öklid mesafesini hesaplar ve hedef noktaya en yakın olanı döndürür.
+    Karmaşıklık: O(n), n = nokta sayısı
+    """
+    # İşlem kodu burada...</div>
+            
+            <h2 class="lesson-subtitle">Yorumlarla Geçici Olarak Kod Devre Dışı Bırakma</h2>
+            <p class="lesson-text">
+                Yorum satırları, kodun belirli bölümlerini geçici olarak devre dışı bırakmak (yorum yapmak veya "comment out" etmek) için de kullanılabilir:
+            </p>
+            
+            <div class="code-block">
+# Hata ayıklama için eski ve yeni versiyonları karşılaştırma
+def calculate_area(radius):
+    # Eski versiyonda pi sabit değer olarak tanımlanmıştı
+    # pi = 3.14
+    # area = pi * radius * radius
+    
+    # Yeni versiyonda math modülünden daha kesin pi değerini kullanıyoruz
+    import math
+    area = math.pi * radius * radius
+    
+    return area
+
+# Birden çok satırı yorum haline getirme
+"""
+Bu kod bloğu henüz tamamlanmadığı için yoruma alındı:
+def complex_calculation():
+    # karmaşık hesaplamalar burada
+    pass
+"""</div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-code"></i> IDE İpucu</h4>
+                <p>Çoğu Python IDE'sinde (PyCharm, VSCode vb.) bir kod bloğunu seçip <code>Ctrl+/</code> (Windows/Linux) veya <code>Cmd+/</code> (Mac) tuşlarına basarak hızlıca yorum satırına çevirebilir veya yorum satırından çıkarabilirsiniz.</p>
+            </div>
+        </section>
+        
+        <!-- Projects Section -->
+        <section class="section" id="projects">
+            <h2 class="lesson-subtitle">Yapılabilecek Projeler</h2>
+            <p class="lesson-text">
+                Python'da yorum satırları konusunda pratik yapmak için aşağıdaki projeleri deneyebilirsiniz:
+            </p>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h4><i class="fas fa-code"></i> Kod Dokümantasyonu</h4>
+                    <p>Önceden yazılmış bir Python projesini alın ve uygun docstring'ler ve yorumlar ekleyerek tam olarak belgeleyin.</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-glasses"></i> Kod İnceleme</h4>
+                    <p>Açık kaynaklı bir Python projesini inceleyip kullanılan yorum stillerini ve iyi uygulamaları analiz edin.</p>
+                    <span class="difficulty beginner">Başlangıç</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-book"></i> Otomatik Dokümantasyon</h4>
+                    <p>Sphinx veya pydoc gibi araçları kullanarak, docstring içeren bir projenin otomatik dokümantasyonunu oluşturun.</p>
+                    <span class="difficulty intermediate">Orta</span>
+                </div>
+                
+                <div class="project-card">
+                    <h4><i class="fas fa-tools"></i> Yorum Analiz Aracı</h4>
+                    <p>Bir Python dosyasını analiz edip içindeki yorum satırlarını ve kod satırlarını sayan, kod/yorum oranını hesaplayan bir araç geliştirin.</p>
+                    <span class="difficulty intermediate">Orta</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quiz Section -->
+        <section class="section" id="quiz">
+            <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+            <p class="lesson-text">
+                Python'da yorum satırları konusunu ne kadar anladığınızı test etmek için aşağıdaki soruları cevaplayın:
+            </p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <p class="question-text">1. Python'da tek satırlık yorum eklemek için hangi karakter kullanılır?</p>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">//</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">/* */</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">#</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">--</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! Python'da tek satırlık yorumlar # (diyez) işareti ile başlar.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. Python'da tek satırlık yorumlar # (diyez) işareti ile başlar. // JavaScript'te, /* */ birçok dilde çok satırlı yorum için, -- ise SQL'de kullanılır.
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="question-text">2. Aşağıdaki Python kodunda kaç satır yorum vardır?</p>
+                    <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;"># Kullanıcı bilgileri
+isim = "Ahmet"  # Kullanıcı adı
+yas = 25
+"""
+Bu bir çok satırlı yorum
+İki satır içeriyor
+"""
+print(isim, yas)  # Ekrana yazdır</pre>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">3</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">4</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">5</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">6</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! Kodda toplam 5 satır yorum vardır: "# Kullanıcı bilgileri", "# Kullanıcı adı", çok satırlı yorumdaki 2 satır ve "# Ekrana yazdır".
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. Kodda toplam 5 satır yorum vardır: "# Kullanıcı bilgileri", "# Kullanıcı adı", çok satırlı yorumdaki 2 satır ve "# Ekrana yazdır".
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="question-text">3. Python'da çok satırlı yorumlar için ne kullanılır?</p>
+                    <div class="options">
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">/* Yorum */</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">// Yorum //</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">/** Yorum **/</div>
+                        </div>
+                        <div class="option" data-correct="true">
+                            <div class="option-marker">D</div>
+                            <div class="option-text">"""Yorum"""</div>
+                        </div>
+                    </div>
+                    <div class="feedback correct">
+                        <i class="fas fa-check-circle"></i> Doğru! Python'da çok satırlı yorumlar üç çift tırnak (""") veya üç tek tırnak (''') ile çevrelenir.
+                    </div>
+                    <div class="feedback incorrect">
+                        <i class="fas fa-times-circle"></i> Yanlış. Python'da çok satırlı yorumlar üç çift tırnak (""") veya üç tek tırnak (''') ile çevrelenir.
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">4. Docstring nedir?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Sadece kod dosyasının en başında kullanılabilen yorum türü</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Fonksiyonlar, sınıflar ve modüller için dokümantasyon amacıyla kullanılan çok satırlı yorumlar</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Python'a özgü özel bir kod bloğu</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Kodun derlenmesini sağlayan bir komut</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Docstring, Python'da fonksiyonlar, sınıflar ve modüller için dokümantasyon amacıyla kullanılan, üç tırnak işareti ile yazılan bir çeşit çok satırlı yorumdur.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Docstring, Python'da fonksiyonlar, sınıflar ve modüller için dokümantasyon amacıyla kullanılan, üç tırnak işareti ile yazılan bir çeşit çok satırlı yorumdur.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">5. Bir fonksiyonun docstring'ine programatik olarak nasıl erişebilirsiniz?</p>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">fonksiyon.__doc__</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">fonksiyon.comment</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">get_doc(fonksiyon)</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">fonksiyon.get_docstring()</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da bir fonksiyonun docstring'ine __doc__ özelliği ile erişilebilir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da bir fonksiyonun docstring'ine __doc__ özelliği ile erişilebilir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">6. Aşağıdakilerden hangisi yorum satırları için doğru değildir?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Kod çalışırken yorumlar çalıştırılmaz</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Yorumlar kodun okunabilirliğini artırır</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Python, yorum içindeki yazım hatalarını kontrol eder</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Yorumlar, kod satırlarını geçici olarak devre dışı bırakmak için kullanılabilir</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python, yorum satırlarındaki yazım hatalarını kontrol etmez çünkü yorumlar çalıştırılmaz ve yorumlayıcı tarafından görmezden gelinir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python, yorum satırlarındaki yazım hatalarını kontrol etmez çünkü yorumlar çalıştırılmaz ve yorumlayıcı tarafından görmezden gelinir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">7. Aşağıdaki Python kodu hangi çıktıyı üretir?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">def toplama(a, b):
+    """İki sayıyı toplar."""
+    return a + b
+
+print(toplama.__doc__)</pre>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">İki sayıyı toplar.</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">None</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">"""İki sayıyı toplar."""</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">SyntaxError</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! __doc__ özelliği fonksiyonun docstring metnini döndürür, bu durumda "İki sayıyı toplar." metnini.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. __doc__ özelliği fonksiyonun docstring metnini döndürür, bu durumda "İki sayıyı toplar." metnini.
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">7. Python'da yorum satırları için hangisi doğrudur?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Yorumlar /* ve */ arasına yazılır</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Yorum satırları // ile başlar</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Tek satırlık yorumlar # işareti ile başlar</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Python'da yorumlar çalıştırılabilir kod içerir</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da tek satırlık yorumlar # işareti ile başlar ve satır sonuna kadar devam eder. Bu yorumlar kod çalıştırılırken görmezden gelinir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da tek satırlık yorumlar # işareti ile başlar. /* */ ve // diğer programlama dillerinde kullanılan yorum işaretleridir.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">8. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">print("Hello World") # Bu bir yorum satırı
+# print("Bu satır çalışmayacak")
+print("Python")</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Hello World<br>Bu satır çalışmayacak<br>Python</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Hello World # Bu bir yorum satırı<br>Python</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Hello World<br>Python</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Hello World</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! # işaretinden sonraki kısımlar yorum olarak değerlendirilir ve çalıştırılmaz. İkinci satır tamamen yorum olduğu için atlanır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. # işaretinden sonraki kısımlar yorum olarak değerlendirilir ve çalıştırılmaz. İkinci satır tamamen yorum olduğu için atlanır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">9. Python'da çok satırlı yorumlar için aşağıdakilerden hangisi doğrudur?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Python'da çok satırlı yorum yapılamaz</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">/* ve */ kullanılarak çok satırlı yorum yapılır</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Üç tırnak işareti (''' veya """) arasına alınarak çok satırlı yorum yapılır</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Çok satırlı yorumlar için her satırın başına ## yazılır</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da üç tırnak işareti (''' veya """) kullanarak çok satırlı yorumlar oluşturulabilir. Bu aslında çok satırlı string'dir ancak bir değişkene atanmadığında yorum olarak davranır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da üç tırnak işareti (''' veya """) kullanarak çok satırlı yorumlar oluşturulabilir. /* */ gibi işaretler Python'da kullanılmaz.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">10. Aşağıdakilerden hangisi Python'da yorum satırlarının bir kullanım amacı değildir?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">Kodun işlevini açıklamak</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">Geçici olarak kod bloklarını devre dışı bırakmak</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">Dokümantasyon oluşturmak</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Kodun çalışma hızını artırmak</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Yorum satırları kodun çalışma hızını artırmaz. Yorumlar sadece kodu açıklamak, dokümantasyon oluşturmak veya geçici olarak kod bloklarını devre dışı bırakmak için kullanılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Yorum satırları kodun çalışma hızını artırmaz. Yorumlar sadece kodu açıklamak, dokümantasyon oluşturmak veya geçici olarak kod bloklarını devre dışı bırakmak için kullanılır.
+                </div>
+            </div>
+        </section>
+        
+        <!-- Useful Resources Section -->
+        <section class="section" id="resources">
+            <h2 class="lesson-subtitle">Önerilen Kaynaklar</h2>
+            <p class="lesson-text">
+                Python yorum satırları için faydalanabileceğiniz bazı önerilen kaynaklar:
+            </p>
+            
+            <div class="resources-list">
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Python Earth - Python Dersleri 6 Python Yorum Satırları</h4>
+                        <p>Python'da yorum yazma hakkında detaylı anlatım.</p>
+                        <a href="https://youtu.be/cNPe92D_ato?si=0WFEg7O5QPjLqtMM" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Orçun Kaya - Bölüm 32 Açıklama Yorum Satırları</h4>
+                        <p>Kaliteli Python kodu için yorum yazma teknikleri.</p>
+                        <a href="https://youtu.be/fOHXF2veV8w?si=pYMN65VCsaK8fQai" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Musa Arda - Python Yorum Satırı</h4>
+                        <p> kaliteli daha okunabilir yorum satırları yazma teknikleri.</p>
+                        <a href="https://youtu.be/QDJsExzHN7Y?si=RLeSesgCLnLN6Mma" class="resource-link" target="_blank">Hemen izle<i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </section>
+        
+        <!-- Next Steps Section -->
+        <section class="section" id="next-steps">
+            <h2 class="lesson-subtitle">Sonraki Adımlar</h2>
+            <p class="lesson-text">
+                Python yorum satırları konusunu tamamladıktan sonra öğrenmenize devam edebileceğiniz konular:
+            </p>
+            
+            <ul class="lesson-text">
+                <li><span class="highlight">Dokümantasyon Standartları:</span> PEP 8 ve PEP 257 gibi Python dokümantasyon standartlarını öğrenin.</li>
+                <li><span class="highlight">Docstring:</span> Fonksiyonlar ve sınıflar için detaylı dokümantasyon yazımını öğrenin.</li>
+                <li><span class="highlight">Pylint ve Flake8:</span> Kod kalitesini ve yorum standardını kontrol eden araçları kullanmayı öğrenin.</li>
+                <li><span class="highlight">Otomatik Dokümantasyon:</span> Sphinx gibi araçlarla yorumlardan otomatik dokümantasyon oluşturmayı öğrenin.</li>
+                <li><span class="highlight">İyi Kod Pratikleri:</span> Kendini açıklayan kod yazma ve ne zaman yorum kullanmanız gerektiğini öğrenin.</li>
+            </ul>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-trophy"></i> Başarı İpucu</h4>
+                <p>Python'da yorum satırları yazarken, kodu neden yazdığınızı açıklayın, nasıl yazdığınızı değil! İyi yazılmış kod genellikle kendi kendini açıklar, yorumlar ise kodun amacını ve mantığını belgelemek için kullanılmalıdır.</p>
+            </div>
+        </section>
+        <footer class="footer">
+ 
+            <p class="copyright">&copy; 2025 Kodroyale | Tüm Hakları Saklıdır</p>
+        </footer>
+        <script>
+            // Quiz işlevselliği için JavaScript
+            document.addEventListener('DOMContentLoaded', function() {
+                const options = document.querySelectorAll('.option');
+                
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        // Bu sorunun tüm seçeneklerini seçin
+                        const parentQuestion = this.closest('.quiz-question');
+                        const allOptions = parentQuestion.querySelectorAll('.option');
+                        const correctFeedback = parentQuestion.querySelector('.feedback.correct');
+                        const incorrectFeedback = parentQuestion.querySelector('.feedback.incorrect');
+                        
+                        // Önce diğer seçeneklerden sınıfları kaldır
+                        allOptions.forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                        });
+                        
+                        // Tüm geri bildirimleri gizle
+                        correctFeedback.style.display = 'none';
+                        incorrectFeedback.style.display = 'none';
+                        
+                        // Doğru cevap kontrolü ve sınıf ekleme
+                        const isCorrect = this.getAttribute('data-correct') === 'true';
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            correctFeedback.style.display = 'block';
+                        } else {
+                            this.classList.add('incorrect');
+                            incorrectFeedback.style.display = 'block';
+                            
+                            // Doğru cevabı yeşil yap
+                            allOptions.forEach(opt => {
+                                if (opt.getAttribute('data-correct') === 'true') {
+                                    opt.classList.add('correct');
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+    
+    // Hamburger menü işlevselliği
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.querySelector('.hamburger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const body = document.body;
+    
+        // Hamburger menü tıklama işlevi
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            body.classList.toggle('menu-open'); // Menü açıkken body'nin scroll'unu engellemek için
+        });
+    
+        // Menü bağlantılarına tıklandığında menüyü kapat
+        const navItems = document.querySelectorAll('.nav-links a');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+    
+        // Sayfa dışına tıklandığında menüyü kapat
+        document.addEventListener('click', function(event) {
+            const isClickInside = navLinks.contains(event.target) || hamburger.contains(event.target);
+            
+            if (!isClickInside && navLinks.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+    
+        // Scroll engelleme için CSS ekleyelim
+        const style = document.createElement('style');
+        style.textContent = `
+            body.menu-open {
+                overflow: hidden;
+            }
+            
+            @media (max-width: 768px) {
+                .nav-links {
+                    overflow-y: auto;
+                }
+                
+                .nav-links a {
+                    display: block;
+                    padding: 15px;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 18px;
+                    border-bottom: 1px solid rgba(255,255,255,0.1);
+                }
+                
+                .nav-links a:last-child {
+                    border-bottom: none;
+                }
+                
+                .nav-links .back-button {
+                    margin-top: 30px;
+                    width: auto;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+    
+        </script>
+      
+    </body>
+    </html>

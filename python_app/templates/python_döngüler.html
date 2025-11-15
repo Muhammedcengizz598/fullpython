@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python'da döngüler - Kodroyale</title>
+    <meta name="description" content="Kodroyale ile sıfırdan Python'da döngüler eğitimi: örneklerle sade anlatım, modern tasarım ve eksiksiz içerikle yazılım öğrenin.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #306998;          /* Python mavi */
+    --primary-dark: #1D415E;     /* Koyu Python mavi */
+    --secondary: #FFD43B;        /* Python sarı */
+    --accent: #4B8BBE;           /* Python açık mavi */
+    --accent-second: #64A334;    /* Python yılan yeşili */
+    --dark: #000000;             /* Koyu arka plan */
+    --darker: #000000;           /* Daha koyu arka plan */
+    --light: #F5F5F5;            /* Açık metin */
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-second));
+    --card-bg: linear-gradient(145deg, #1E1E2A, #131320);
+    --glow: 0 0 20px rgba(48, 105, 152, 0.5);
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 4%;
+    backdrop-filter: blur(6px); /* Daha hafif blur */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); /* Daha ince çizgi */
+  }
+
+  .header .logo {
+    font-size: 1.5rem; /* Daha küçük logo */
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+/* Şık kutuları için mobilde daha yuvarlak ve dengeli görünüm */
+.option {
+  padding: 1rem;
+  border-radius: 12px; /* Daha yuvarlak kenar */
+  flex-wrap: wrap;     /* Küçük ekranlarda içeriğin taşmasını önler */
+  justify-content: flex-start;
+}
+
+/* Seçenek işaretçisi (A, B, C, D) için tam yuvarlak stil */
+.option-marker {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.welcome h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+        align-items: center;
+        display: flex;
+        
+    }
+    * {
+  -webkit-tap-highlight-color: transparent; /* Vurgulama rengini şeffaf yapar */
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Alternatif yazım */
+}
+    .welcome p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+body {
+    background: var(--dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--light);
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* === Header & Navigation === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 1rem 10%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.footer-nav a:hover {
+    color: var(--secondary);
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--light);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 999;
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+.mobile-nav a:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-5px);
+}
+
+/* === Main Content === */
+.main-content {
+    margin-top: 120px;
+    padding: 0 10%;
+}
+
+.lesson-title {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.lesson-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.lesson-subtitle {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.lesson-subtitle::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.section:hover .lesson-subtitle::before {
+    width: 100%;
+}
+
+.lesson-text {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.highlight {
+    color: var(--secondary);
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--secondary);
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.code-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.info-box {
+    background: rgba(48, 105, 152, 0.1);
+    border-left: 3px solid var(--primary);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(48, 105, 152, 0));
+    z-index: -1;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-box h4 i {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* === Section Styling === */
+.section {
+    margin-bottom: 4rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    top:50px;
+}
+
+
+.nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+                        top: 15px;
+
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow);
+}
+
+.section:hover::before {
+    background: linear-gradient(135deg, rgba(48, 105, 152, 0.1), rgba(255, 212, 59, 0.1));
+}
+
+/* === Projects Section === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.project-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gradient);
+    transition: height 0.4s ease;
+    border-radius: 4px 0 0 4px;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+
+}
+
+.project-card:hover::before {
+    height: 100%;
+}
+
+.project-card h4 {
+    color: var(--secondary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover h4 {
+    transform: translateX(10px);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .difficulty {
+    transform: scale(1.05);
+}
+
+.beginner {
+    background: rgba(100, 163, 52, 0.2);
+    color: #64A334;
+    border: 1px solid #64A334;
+}
+
+.intermediate {
+    background: rgba(255, 212, 59, 0.2);
+    color: #FFD43B;
+    border: 1px solid #FFD43B;
+}
+
+.advanced {
+    background: rgba(255, 61, 61, 0.2);
+    color: #FF3D3D;
+    border: 1px solid #FF3D3D;
+}
+
+/* === Resources Section === */
+.resources-list {
+    margin-top: 1.5rem;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    border-radius: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.resource-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 212, 59, 0.1), transparent);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.resource-item:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 5px 15px rgba(48, 105, 152, 0.3);
+}
+
+.resource-item:hover::after {
+    width: 100%;
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.resource-info h4 {
+    margin-bottom: 0.3rem;
+    color: var(--light);
+    transition: color 0.3s ease;
+}
+
+.resource-item:hover .resource-info h4 {
+    color: var(--secondary);
+}
+
+.resource-info p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.resource-link {
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.resource-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary);
+    transition: width 0.3s ease;
+}
+
+.resource-link:hover {
+    color: var(--secondary);
+    transform: translateX(5px);
+}
+
+.resource-link:hover::after {
+    width: 100%;
+}
+
+.resource-link i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.resource-link:hover i {
+    transform: translateX(3px);
+}
+
+/* === Quiz Section === */
+.quiz-container {
+    margin-top: 2rem;
+}
+
+.quiz-question {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quiz-question:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px rgba(216, 204, 30, 0.536), 0 0 2px 2px rgba(141, 204, 25, 0.633);
+
+}
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--light);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: var(--gradient);
+    border-radius: 3px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.option:hover::after {
+    left: 100%;
+}
+
+.option.correct {
+    background: rgba(100, 163, 52, 0.2);
+    border-color: var(--accent-second);
+    animation: pulse 1s ease;
+}
+
+.option.incorrect {
+    background: rgba(255, 61, 61, 0.2);
+    border-color: #FF3D3D;
+    animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.option-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.option:hover .option-marker {
+    border-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.option.correct .option-marker {
+    background: var(--accent-second);
+    border-color: var(--accent-second);
+    color: var(--dark);
+}
+
+.option.incorrect .option-marker {
+    background: #FF3D3D;
+    border-color: #FF3D3D;
+    color: var(--dark);
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: none;
+    border-radius: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: rgba(100, 163, 52, 0.1);
+    border-left: 3px solid var(--accent-second);
+    color: #9CDE50;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feedback.incorrect {
+    background: rgba(255, 61, 61, 0.1);
+    border-left: 3px solid #FF3D3D;
+    color: #FF7373;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Footer === */
+.footer {
+    background: var(--darker);
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.copyright:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* === Scroll to Top Button === */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 997;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* === Animations === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Media Queries === */
+@media (max-width: 992px) {
+    .header, .main-content, .footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2.4rem;
+    }
+    
+    .footer-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.2rem 5%;
+    }
+    
+    .lesson-title {
+        font-size: 2rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section {
+        padding: 1.7rem;
+    }
+    
+    .info-box, .code-block {
+        padding: 1.2rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 5% 1.5rem;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 1rem 5%;
+    }
+    
+    .header .logo {
+        font-size: 1.6rem;
+    }
+    
+    .lesson-title {
+        font-size: 1.8rem;
+    }
+    
+    .lesson-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resource-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .back-button {
+        font-size: 0.9rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .option {
+        padding: 0.8rem;
+    }
+}
+.pxx {
+    font-size: 1.2rem;
+    margin: 2rem auto;
+    color: #e6e6fa;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 800px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0 1.5rem;
+}
+    /* Mevcut CSS'e eklenecek kısımlar */
+/* Mevcut CSS'e eklenecek kısımlar */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+/* Geri Dön butonu için özel stil */
+.back-button:hover {
+    transform: translateY(-2px);
+    animation: boxx 0.3s ease forwards;
+}
+
+@keyframes boxx {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
+    }
+}
+
+
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+    .nav-links .back-button {
+        margin-left: auto;
+    }
+}
+
+
+/* Küçük ekranlar için media query */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 1rem;
+        transition: right 0.5s ease;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    /* Back button mobil özelleştirme */
+   
+    /* Hamburger menü animasyonu */
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+
+.hamburger-menu:hover .bar {
+    background-color: #00c3ff;
+}
+
+/* Daha yumuşak geçişler için */
+.nav-links a {
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00c3ff;
+}
+
+/* Hamburger çubuklarını biraz daha belirgin yapmak için */
+.hamburger-menu .bar {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+    </style>
+<header class="header">
+    <div class="logo">Kodroyale</div>
+    
+    <!-- Hamburger menü butonu ekleniyor -->
+    <div class="hamburger-menu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <!-- v sınıfını nav-links olarak değiştiriyoruz -->
+    <div class="footer-nav nav-links">
+        <a href="#projects">Projeler</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#resources">Kaynaklar</a>
+        <a href="#next-steps">Sonraki Adımlar</a>
+        <a href="{% url 'python' %}" class="ack-button">
+            <i class="fas fa-arrow-left"></i> Geri Dön
+        </a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <h1 class="lesson-title">Python'da Döngüler</h1>
+    <h6 class="pxx">Bu dersimizde Python'da döngüler nedir, nasıl kullanılır ve farklı döngü yapıları hakkında bilgi edineceksiniz.</h6>
+    <!-- Introduction Section -->
+    <section class="section">
+        <h2 class="lesson-subtitle">Döngüler Nedir?</h2>
+        <p class="lesson-text">
+            Döngüler, <span class="highlight">programlama dillerinde tekrarlı işlemleri yapmak için kullanılan yapılardır</span>. 
+            Bir döngü, belirli bir koşul sağlandığı sürece bir kod bloğunu tekrar tekrar çalıştırmanızı sağlar.
+        </p>
+        
+        <p class="lesson-text">
+            Python'da temel olarak <span class="highlight">for döngüsü</span> ve <span class="highlight">while döngüsü</span> olmak üzere iki ana döngü türü vardır.
+        </p>
+        
+        <h2 class="lesson-subtitle">For Döngüsü</h2>
+        <p class="lesson-text">
+            For döngüsü, bir koleksiyon (liste, demet, dizi) üzerinde yineleme yapmanızı sağlar. Her bir yinelemede koleksiyondaki bir sonraki öğeyi işler.
+        </p>
+        
+        <div class="code-block">
+# For döngüsü temel yapısı
+for değişken in koleksiyon:
+# Tekrarlanacak kod bloğu
+
+# Örnek: 1'den 5'e kadar sayıları yazdırma
+for sayı in [1, 2, 3, 4, 5]:
+print(sayı)
+
+# Örnek: Bir liste üzerinde döngü
+meyveler = ["elma", "armut", "muz", "çilek"]
+for meyve in meyveler:
+print(meyve)</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-lightbulb"></i> Biliyor muydunuz?</h4>
+            <p>Python'da for döngüsü, diğer dillerdeki for döngüsünden biraz farklıdır. Python'daki for döngüsü, diğer dillerde genellikle "for-each" olarak bilinen yapıya daha çok benzer.</p>
+        </div>
+        
+        <h3 class="lesson-subtitle">Range Fonksiyonu</h3>
+        <p class="lesson-text">
+            <span class="highlight">range()</span> fonksiyonu, for döngüsü ile sıklıkla kullanılır ve belirli bir aralıkta sayı dizisi üretir.
+        </p>
+        
+        <div class="code-block">
+# range(stop) - 0'dan başlayarak stop-1'e kadar sayılar
+for i in range(5):  # 0, 1, 2, 3, 4
+print(i)
+
+# range(start, stop) - start'tan başlayarak stop-1'e kadar sayılar
+for i in range(2, 6):  # 2, 3, 4, 5
+print(i)
+
+# range(start, stop, step) - start'tan başlayarak stop-1'e kadar, step adımıyla sayılar
+for i in range(1, 10, 2):  # 1, 3, 5, 7, 9
+print(i)
+
+# range ile geriye sayma
+for i in range(10, 0, -1):  # 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+print(i)</div>
+        
+        <h3 class="lesson-subtitle">Enumerate Fonksiyonu</h3>
+        <p class="lesson-text">
+            <span class="highlight">enumerate()</span> fonksiyonu, bir döngü içinde hem öğeleri hem de indeksleri aynı anda almanızı sağlar.
+        </p>
+        
+        <div class="code-block">
+meyveler = ["elma", "armut", "muz", "çilek"]
+
+# İndeks ve değer çiftlerini alma
+for indeks, meyve in enumerate(meyveler):
+print(f"{indeks}. sıradaki meyve: {meyve}")
+
+# Belirli bir indeksten başlatma
+for indeks, meyve in enumerate(meyveler, start=1):
+print(f"{indeks}. meyve: {meyve}")</div>
+        
+        <h2 class="lesson-subtitle">While Döngüsü</h2>
+        <p class="lesson-text">
+            While döngüsü, belirli bir koşul doğru olduğu sürece bir kod bloğunu tekrar tekrar çalıştırır.
+        </p>
+        
+        <div class="code-block">
+# While döngüsü temel yapısı
+while koşul:
+# Tekrarlanacak kod bloğu
+# Koşulu değiştirecek bir kod olmalı, yoksa sonsuz döngüye girer!
+
+# Örnek: 5'ten geriye sayma
+sayı = 5
+while sayı > 0:
+print(sayı)
+sayı -= 1  # Her adımda sayıyı 1 azalt
+
+# Örnek: Kullanıcıdan alınan sayıları toplama
+toplam = 0
+sayı = 1
+
+while sayı != 0:
+sayı = int(input("Bir sayı girin (Çıkmak için 0): "))
+toplam += sayı
+
+print(f"Girilen sayıların toplamı: {toplam}")</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-exclamation-triangle"></i> Dikkat!</h4>
+            <p>While döngüsünde koşulun bir noktada False olmasını sağlayan bir kod olmazsa, döngü sonsuza kadar devam eder. Bu duruma "sonsuz döngü" denir.</p>
+        </div>
+        
+        <h3 class="lesson-subtitle">Sonsuz Döngüler</h3>
+        <p class="lesson-text">
+            Sonsuz döngüler, koşul her zaman True olduğunda oluşur. Bazen kasıtlı olarak sonsuz döngü oluşturulabilir ve içeride bir koşul ile break kullanılarak döngüden çıkılabilir.
+        </p>
+        
+        <div class="code-block">
+# Sonsuz döngü örneği
+# while True:
+#     kullanıcı_girişi = input("Bir şey yazın (çıkmak için 'q'): ")
+#     if kullanıcı_girişi == 'q':
+#         break
+#     print(f"Girilen: {kullanıcı_girişi}")
+# 
+# print("Döngüden çıkıldı!")</div>
+        
+        <h2 class="lesson-subtitle">Döngü Kontrol İfadeleri</h2>
+        <p class="lesson-text">
+            Python'da döngülerin davranışını kontrol etmek için kullanabileceğiniz özel ifadeler vardır:
+        </p>
+        
+        <h3 class="lesson-subtitle">1. break İfadesi</h3>
+        <p class="lesson-text">
+            <span class="highlight">break</span> ifadesi, bir döngüyü tamamen sonlandırır ve döngüden çıkar.
+        </p>
+        
+        <div class="code-block">
+# break örneği - 5 sayısı bulunduğunda döngüden çıkar
+sayılar = [1, 3, 5, 7, 9]
+for sayı in sayılar:
+if sayı == 5:
+    print(f"{sayı} bulundu, döngüden çıkılıyor.")
+    break
+print(f"İşlenen sayı: {sayı}")
+
+# While döngüsünde break
+i = 1
+while i <= 10:
+print(i)
+if i == 5:
+    print("5'e ulaşıldı, döngüden çıkılıyor.")
+    break
+i += 1</div>
+        
+        <h3 class="lesson-subtitle">2. continue İfadesi</h3>
+        <p class="lesson-text">
+            <span class="highlight">continue</span> ifadesi, döngünün mevcut yinelemesini atlar ve bir sonraki yinelemeye geçer.
+        </p>
+        
+        <div class="code-block">
+# continue örneği - çift sayıları atla
+for i in range(1, 10):
+if i % 2 == 0:  # i çift sayı ise
+    continue  # mevcut yinelemeyi atla
+print(i)  # sadece tek sayılar yazdırılır
+
+# While döngüsünde continue
+i = 0
+while i < 10:
+i += 1
+if i % 3 == 0:  # 3'e bölünebilen sayıları atla
+    continue
+print(i)  # 3'e bölünemeyen sayılar yazdırılır</div>
+        
+        <h3 class="lesson-subtitle">3. else İfadesi</h3>
+        <p class="lesson-text">
+            Python'da for ve while döngülerinde <span class="highlight">else</span> bloğu kullanabilirsiniz. Bu blok, döngü normal bir şekilde tamamlandığında (break ile sonlandırılmadığında) çalışır.
+        </p>
+        
+        <div class="code-block">
+# Döngü else bloğu örneği
+for i in range(1, 6):
+print(i)
+else:
+print("Döngü tamamlandı!")
+
+# break ile else bloğunun çalışmaması
+for i in range(1, 6):
+print(i)
+if i == 3:
+    break
+else:
+print("Bu yazı görünmeyecek çünkü döngü break ile sonlandı.")
+
+# While döngüsünde else
+sayaç = 1
+while sayaç <= 5:
+print(sayaç)
+sayaç += 1
+else:
+print("While döngüsü tamamlandı!")</div>
+        
+        <h2 class="lesson-subtitle">İç İçe Döngüler</h2>
+        <p class="lesson-text">
+            Bir döngü içinde başka bir döngü kullanabilirsiniz. Buna iç içe döngüler denir.
+        </p>
+        
+        <div class="code-block">
+# İç içe döngü örneği
+for i in range(1, 4):  # Dış döngü
+for j in range(1, 4):  # İç döngü
+    print(f"i={i}, j={j}")
+
+# Çarpım tablosu örneği
+for i in range(1, 6):
+for j in range(1, 6):
+    çarpım = i * j
+    print(f"{i} x {j} = {çarpım}", end="\t")
+print()  # Her satırın sonunda yeni satıra geç</div>
+        
+        <h2 class="lesson-subtitle">List Comprehension</h2>
+        <p class="lesson-text">
+            <span class="highlight">List comprehension</span>, bir liste oluşturmak için kullanılan kısa ve etkili bir yöntemdir. For döngüsünün daha özlü bir alternatifidir.
+        </p>
+        
+        <div class="code-block">
+# Normal for döngüsü ile liste oluşturmak
+kareler = []
+for x in range(1, 6):
+kareler.append(x ** 2)
+print(kareler)  # [1, 4, 9, 16, 25]
+
+# List comprehension ile aynı işlem
+kareler_lc = [x ** 2 for x in range(1, 6)]
+print(kareler_lc)  # [1, 4, 9, 16, 25]
+
+# Koşullu list comprehension
+çift_sayılar = [x for x in range(1, 11) if x % 2 == 0]
+print(çift_sayılar)  # [2, 4, 6, 8, 10]
+
+# İç içe döngülerle list comprehension
+koordinatlar = [(x, y) for x in range(1, 4) for y in range(1, 3)]
+print(koordinatlar)  # [(1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (3, 2)]
+
+# If-else ile list comprehension
+sonuç = ["çift" if x % 2 == 0 else "tek" for x in range(1, 6)]
+print(sonuç)  # ['tek', 'çift', 'tek', 'çift', 'tek']</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-code"></i> Dictionary ve Set Comprehension</h4>
+            <p>List comprehension benzeri yapıları dictionary ve set oluşturmak için de kullanabilirsiniz:</p>
+            <div class="code-block">
+# Dictionary comprehension
+sayı_kareleri = {x: x**2 for x in range(1, 6)}
+print(sayı_kareleri)  # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+
+# Set comprehension
+kareler_set = {x**2 for x in range(1, 6)}
+print(kareler_set)  # {1, 4, 9, 16, 25}</div>
+        </div>
+        
+        <h2 class="lesson-subtitle">Yaygın Döngü Kullanım Örnekleri</h2>
+        <p class="lesson-text">
+            Python'da döngülerin sık kullanıldığı bazı senaryolar:
+        </p>
+        
+        <div class="code-block">
+# 1. Listeleri işleme
+isimler = ["Ali", "Veli", "Ayşe", "Fatma"]
+for isim in isimler:
+print(f"Merhaba, {isim}!")
+
+# 2. Sözlükleri işleme
+öğrenci = {"ad": "Ali", "yaş": 20, "not": 85}
+
+# Sadece anahtarları dolaşma
+for key in öğrenci:
+print(key)
+
+# Anahtar ve değerleri dolaşma
+for key, value in öğrenci.items():
+print(f"{key}: {value}")
+
+# 3. Dosya içeriğini okuma
+# with open("dosya.txt", "r") as dosya:
+#     for satır in dosya:
+#         print(satır.strip())
+
+# 4. Belirli bir aralıkta toplam hesaplama
+toplam = 0
+for sayı in range(1, 101):
+toplam += sayı
+print(f"1'den 100'e kadar olan sayıların toplamı: {toplam}")
+
+# 5. Koşullu toplama - çift sayıların toplamı
+çift_toplam = 0
+for sayı in range(1, 101):
+if sayı % 2 == 0:
+    çift_toplam += sayı
+print(f"1'den 100'e kadar olan çift sayıların toplamı: {çift_toplam}")</div>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-lightbulb"></i> İpucu</h4>
+            <p>Python'da döngü performansını artırmak için büyük listelerde list comprehension kullanmak, gereksiz hesaplamalardan kaçınmak ve mümkünse built-in fonksiyonları (sum(), max(), min() vb.) tercih etmek önemlidir.</p>
+        </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <h2 class="lesson-subtitle">Yapılabilecek Projeler</h2>
+        <p class="lesson-text">
+            Python'da döngüler konusunda pratik yapmak için aşağıdaki projeleri deneyebilirsiniz:
+        </p>
+        
+        <div class="projects-grid">
+            <div class="project-card">
+                <h4><i class="fas fa-calculator"></i> Çarpım Tablosu Oluşturucu</h4>
+                <p>İç içe döngüler kullanarak kullanıcının istediği boyutta çarpım tablosu oluşturan bir program yazın.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-random"></i> Sayı Tahmin Oyunu</h4>
+                <p>While döngüsü kullanarak bilgisayarın tuttuğu sayıyı tahmin etmeye çalışan bir oyun yazın.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-chart-bar"></i> Basit İstatistik Hesaplayıcı</h4>
+                <p>Kullanıcıdan alınan sayılar üzerinde döngüler kullanarak ortalama, en büyük, en küçük değerleri bulan bir program yazın.</p>
+                <span class="difficulty beginner">Başlangıç</span>
+            </div>
+            
+            <div class="project-card">
+                <h4><i class="fas fa-tasks"></i> To-Do Listesi Uygulaması</h4>
+                <p>Döngüler kullanarak kullanıcının yapılacak işleri ekleyip, listeleyip, silebileceği basit bir konsol uygulaması yazın.</p>
+                <span class="difficulty intermediate">Orta</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quiz Section -->
+    <section class="section" id="quiz">
+        <h2 class="lesson-subtitle">Kendinizi Test Edin</h2>
+        <p class="lesson-text">
+            Python'da döngüler konusunu ne kadar anladığınızı test etmek için aşağıdaki soruları cevaplayın:
+        </p>
+        
+        <div class="quiz-container">
+            <div class="quiz-question">
+                <p class="question-text">1. Aşağıdaki kodun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">for i in range(3, 8, 2):
+print(i, end=" ")</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">3 4 5 6 7</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">3 5 7</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">3 5 7 9</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">3 6</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! range(3, 8, 2) ifadesi 3'ten başlayarak 8'e kadar (8 dahil değil) 2'şer artırarak sayılar üretir, yani 3, 5, 7.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. range(3, 8, 2) ifadesi 3'ten başlayarak 8'e kadar (8 dahil değil) 2'şer artırarak sayılar üretir, yani 3, 5, 7.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">2. Aşağıdaki kodun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">i = 1
+while i < 5:
+print(i, end=" ")
+if i == 3:
+    break
+i += 1</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">1 2 3 4</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">1 2 3</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">1 2</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Sonsuz döngü</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Döngü 1'den başlar, 2'ye devam eder, 3'te break komutu ile döngüden çıkar.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Döngü 1'den başlar, 2'ye devam eder, 3'te break komutu ile döngüden çıkar, bu nedenle çıktı "1 2 3" olur.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">3. Aşağıdaki kodda boş yere ne yazılmalıdır?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">for i in range(1, 11):
+if i % 2 == 0:
+    ____
+print(i)</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">break</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">continue</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">pass</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">return</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Eğer sadece tek sayıları yazdırmak istiyorsak, çift sayıları continue ile atlamamız gerekir.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Eğer sadece tek sayıları yazdırmak istiyorsak, çift sayıları continue ile atlamamız gerekir. break tüm döngüyü sonlandırır, pass hiçbir şey yapmaz, return ise fonksiyonlarda kullanılır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">4. List comprehension kullanarak 1'den 10'a kadar olan sayıların karelerini içeren bir liste nasıl oluşturulur?</p>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">[x**2 for x in range(1, 11)]</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">[x*2 for x in range(1, 11)]</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">[x for x in range(1, 11)**2]</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">[for x in range(1, 11): x**2]</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! [x**2 for x in range(1, 11)] ifadesi, 1'den 10'a kadar olan sayıların karelerini içeren bir liste oluşturur.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Doğru ifade [x**2 for x in range(1, 11)] olmalıdır, bu 1'den 10'a kadar olan sayıların karelerini içeren bir liste oluşturur.
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">5. Aşağıdaki döngünün çıktısı nedir?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">for i in range(0, 10, 2):
+    print(i, end=" ")</pre>
+                <div class="options">
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">0 2 4 6 8</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">0 2 4 6 8 10</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">2 4 6 8</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">0 1 2 3 4 5 6 7 8 9</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! range(0, 10, 2) ifadesi 0'dan başlayıp 10'a kadar (10 dahil değil) 2'şer artarak ilerleyen bir dizi oluşturur.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. range(0, 10, 2) ifadesi 0'dan başlayıp 10'a kadar (10 dahil değil) 2'şer artarak ilerleyen bir dizi oluşturur: 0, 2, 4, 6, 8
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">6. While döngüsü ile ilgili aşağıdakilerden hangisi doğrudur?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">While döngüsü belirli sayıda tekrar için kullanılır</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">While döngüsü bir koşul doğru olduğu sürece çalışır</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">While döngüsü daima for döngüsünden daha hızlıdır</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">While döngüsünde break kullanılamaz</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! While döngüsü belirtilen koşul True olduğu sürece çalışmaya devam eder.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. While döngüsü belirtilen koşul True olduğu sürece çalışmaya devam eder.
+                </div>
+            </div>
+            <div class="quiz-question">
+                <p class="question-text">7. Python'da hangi ifade döngüyü bir sonraki adıma atlar?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">pass</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">break</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">continue</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">return</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! continue ifadesi, döngünün o anki adımını atlayıp bir sonraki adıma geçer.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. continue ifadesi, döngünün o anki adımını atlayıp bir sonraki adıma geçer. break döngüyü tamamen sonlandırır, pass hiçbir şey yapmaz, return ise fonksiyondan çıkış yapar.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">8. Aşağıdaki Python kodunun çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">i = 1
+while i < 10:
+    if i == 5:
+        break
+    print(i, end=" ")
+    i += 1</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">1 2 3 4 5</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">1 2 3 4</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">1 2 3 4 5 6 7 8 9</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">Sonsuz döngü oluşur</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! i değeri 5 olduğunda break ifadesi çalışır ve döngüden çıkılır. Bu nedenle 1, 2, 3, 4 değerleri yazdırılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. i değeri 5 olduğunda break ifadesi çalışır ve döngüden çıkılır. Bu nedenle 1, 2, 3, 4 değerleri yazdırılır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">9. Aşağıdakilerden hangisi bir liste üzerinde döngü oluşturmak için kullanılır?</p>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">for item from liste:</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">for item = liste:</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">for item in liste:</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">while item in liste:</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! Python'da bir liste üzerinde döngü oluşturmak için "for item in liste:" yapısı kullanılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. Python'da bir liste üzerinde döngü oluşturmak için "for item in liste:" yapısı kullanılır.
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p class="question-text">10. Aşağıdaki kod parçasının çıktısı ne olur?</p>
+                <pre style="background: #000; padding: 10px; color: #fff; border-radius: 5px; margin-bottom: 15px;">for i in range(5):
+    for j in range(i):
+        print("*", end="")
+    print()</pre>
+                <div class="options">
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">A</div>
+                        <div class="option-text">*****</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">B</div>
+                        <div class="option-text">*
+**
+***
+****
+*****</div>
+                    </div>
+                    <div class="option" data-correct="true">
+                        <div class="option-marker">C</div>
+                        <div class="option-text">
+
+*
+**
+***
+****</div>
+                    </div>
+                    <div class="option" data-correct="false">
+                        <div class="option-marker">D</div>
+                        <div class="option-text">*
+***
+*****</div>
+                    </div>
+                </div>
+                <div class="feedback correct">
+                    <i class="fas fa-check-circle"></i> Doğru! İlk satırda i=0 olduğu için ve range(0) boş olduğundan yıldız yazdırılmaz, sadece boş satır olur. Sonraki satırlarda sırasıyla 1, 2, 3 ve 4 yıldız yazdırılır.
+                </div>
+                <div class="feedback incorrect">
+                    <i class="fas fa-times-circle"></i> Yanlış. İlk satırda i=0 olduğu için ve range(0) boş olduğundan yıldız yazdırılmaz, sadece boş satır olur. Sonraki satırlarda sırasıyla 1, 2, 3 ve 4 yıldız yazdırılır.
+                </div>
+            </div>
+        </section>
+        
+        <!-- Useful Resources Section -->
+        <section class="section" id="resources">
+            <h2 class="lesson-subtitle">Önerilen Kaynaklar</h2>
+            <p class="lesson-text">
+                Python döngüler için faydalanabileceğiniz bazı önerilen kaynaklar:
+            </p>
+            
+            <div class="resources-list">
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Python'a giriş - Sıfırdan Python Dersleri Ders 7: Döngüler(for ve while)</h4>
+                        <p>Python'da döngüler konusunda detaylı ve anlaşılır bir anlatım.</p>
+                        <a href="https://youtu.be/JUsemOXDvjY?si=mDSjrcfq83iaSmc6" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Yakın Kampüs - Python Dersleri #12 Listelerde For Döngüleri</h4>
+                        <p>Python'da for ve while döngüleri hakkında kapsamlı bir eğitim.</p>
+                        <a href="https://youtu.be/wZZ34Uk1C2U?si=zbFCnrZqPFKctOYF" class="resource-link" target="_blank">Hemen İzle <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-item">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>Bilgisayarkavramlari - Pythonv3 Video 9: Döngüler ve While</h4>
+                        <p>Güzel bir anlatım ile döngüler ve iterasyon hakkında ayrıntılı bilgi.</p>
+                        <a href="https://youtu.be/pDSlzQInZv8?si=tHz9JWJ1aFj3bA7k" class="resource-link" target="_blank">Hemen izle<i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </section>
+        
+        <!-- Next Steps Section -->
+        <section class="section" id="next-steps">
+            <h2 class="lesson-subtitle">Sonraki Adımlar</h2>
+            <p class="lesson-text">
+                Python döngüler konusunu tamamladıktan sonra öğrenmenize devam edebileceğiniz konular:
+            </p>
+            
+            <ul class="lesson-text">
+                <li><span class="highlight">Fonksiyonlar:</span> Kendi fonksiyonlarınızı nasıl tanımlayıp kullanacağınızı öğrenin.</li>
+                <li><span class="highlight">Listeler ve Koleksiyonlar:</span> Liste, tuple, set ve dictionary veri yapılarını daha detaylı öğrenin.</li>
+                <li><span class="highlight">List Comprehension:</span> Döngüleri daha kısa ve etkili bir şekilde yazmanın yollarını öğrenin.</li>
+                <li><span class="highlight">Dosya İşlemleri:</span> Python ile dosya okuma ve yazma işlemlerini öğrenin.</li>
+                <li><span class="highlight">Hata Yakalama:</span> try-except blokları ile hata yönetimini öğrenin.</li>
+            </ul>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-trophy"></i> Başarı İpucu</h4>
+                <p>Python'da döngüleri öğrenirken, alıştırma yapmak çok önemlidir. Basit döngüler yazarak başlayın ve giderek daha karmaşık örneklere geçin. Özellikle iç içe döngüler ve break, continue gibi kontrol ifadelerini kullanarak çeşitli problemleri çözmeye çalışın!</p>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+ 
+        <p class="copyright">&copy; 2025 Kodroyale | Tüm Hakları Saklıdır</p>
+    </footer>
+    <script>
+        // Quiz işlevselliği için JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Bu sorunun tüm seçeneklerini seçin
+                    const parentQuestion = this.closest('.quiz-question');
+                    const allOptions = parentQuestion.querySelectorAll('.option');
+                    const correctFeedback = parentQuestion.querySelector('.feedback.correct');
+                    const incorrectFeedback = parentQuestion.querySelector('.feedback.incorrect');
+                    
+                    // Önce diğer seçeneklerden sınıfları kaldır
+                    allOptions.forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Tüm geri bildirimleri gizle
+                    correctFeedback.style.display = 'none';
+                    incorrectFeedback.style.display = 'none';
+                    
+                    // Doğru cevap kontrolü ve sınıf ekleme
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        correctFeedback.style.display = 'block';
+                    } else {
+                        this.classList.add('incorrect');
+                        incorrectFeedback.style.display = 'block';
+                        
+                        // Doğru cevabı yeşil yap
+                        allOptions.forEach(opt => {
+                            if (opt.getAttribute('data-correct') === 'true') {
+                                opt.classList.add('correct');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+// Hamburger menü işlevselliği
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger-menu');
+    const navLinks = document.querySelector('.nav-links');
+    const body = document.body;
+
+    // Hamburger menü tıklama işlevi
+    hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        body.classList.toggle('menu-open'); // Menü açıkken body'nin scroll'unu engellemek için
+    });
+
+    // Menü bağlantılarına tıklandığında menüyü kapat
+    const navItems = document.querySelectorAll('.nav-links a');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            body.classList.remove('menu-open');
+        });
+    });
+
+    // Sayfa dışına tıklandığında menüyü kapat
+    document.addEventListener('click', function(event) {
+        const isClickInside = navLinks.contains(event.target) || hamburger.contains(event.target);
+        
+        if (!isClickInside && navLinks.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            body.classList.remove('menu-open');
+        }
+    });
+
+    // Scroll engelleme için CSS ekleyelim
+    const style = document.createElement('style');
+    style.textContent = `
+        body.menu-open {
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                overflow-y: auto;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 15px;
+                width: 100%;
+                text-align: center;
+                font-size: 18px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-links .back-button {
+                margin-top: 30px;
+                width: auto;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+    </script>
+  
+</body>
+</html>

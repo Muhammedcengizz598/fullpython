@@ -31,7 +31,7 @@
 
 ---
 
-## ���� Proje Hakkında
+##  Proje Hakkında
 
 **Full Python**, Python programlama dilini sıfırdan başlayarak ileri seviyelere kadar öğrenebileceğiniz kapsamlı bir web platformudur. Django framework'ü kullanılarak geliştirilmiş bu proje, 25+ farklı Python konusunu detaylı açıklamalar ve örneklerle sunmaktadır.
 

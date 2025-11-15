@@ -308,6 +308,6 @@ Bu projeyi destekleyen ve katkıda bulunan herkese teşekkür ederiz!
 
 **⭐ Eğer bu proje size yardımcı olduysa, lütfen bir yıldız verin!**
 
-Made with ❤️ by [Muhammet Cengiz](https://github.com/Muhammedcengizz598)
+Made with ❤️ by [Muhammed Cengiz](https://github.com/Muhammedcengizz598)
 
 </div>

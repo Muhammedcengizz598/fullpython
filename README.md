@@ -294,8 +294,7 @@ copies or substantial portions of the Software.
 **Muhammet Cengiz**
 
 - 🔗 GitHub: [@Muhammedcengizz598](https://github.com/Muhammedcengizz598)
-- 📧 Email: [E-posta adresiniz]
-- 💼 LinkedIn: [LinkedIn profiliniz]
+- 📧 Email: cengizmuhammed598@gmail.com
 
 ---
 
